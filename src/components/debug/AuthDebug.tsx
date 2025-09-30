@@ -107,7 +107,7 @@ export const AuthDebug: React.FC = () => {
         expectedDomain: process.env.NEXT_PUBLIC_APP_URL as string,
         environment: process.env.NODE_ENV as string,
         supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-        hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
+        hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error occurred',
       });

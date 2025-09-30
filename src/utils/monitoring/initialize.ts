@@ -26,22 +26,22 @@ export async function initializeMonitoringSystem(): Promise<boolean> {
 
     // Configure alert system
     configureAlertSystem({
-      enabled: env.enablePerformanceMonitoring !== false,
+      enabled: true,
       minSeverity: isProduction ? AlertSeverity.WARNING : AlertSeverity.INFO,
       throttleMs: isProduction ? 300000 : 60000, // 5 minutes in prod, 1 minute in dev
     });
 
     // Configure notification channels
     configureEmailNotifications({
-      enabled: env.enableEmailAlerts === true,
-      recipients: env.alertEmailRecipients || [],
+      enabled: false, // Disabled by default
+      recipients: [],
       minSeverity: isProduction ? AlertSeverity.WARNING : AlertSeverity.CRITICAL,
     });
 
     configureSlackNotifications({
-      enabled: env.enableSlackAlerts === true,
-      webhookUrl: env.slackWebhookUrl || '',
-      channel: env.slackAlertChannel || '#alerts',
+      enabled: false, // Disabled by default
+      webhookUrl: '',
+      channel: '#alerts',
       minSeverity: isProduction ? AlertSeverity.WARNING : AlertSeverity.CRITICAL,
     });
 
@@ -49,15 +49,15 @@ export async function initializeMonitoringSystem(): Promise<boolean> {
     configurePerformanceReviews({
       enabled: true,
       frequency: isProduction ? ReviewFrequency.WEEKLY : ReviewFrequency.BIWEEKLY,
-      emailReport: env.enableEmailAlerts === true,
+      emailReport: false,
     });
 
     // Register environment-specific thresholds
-    if (env.currentEnv === Environment.PRODUCTION) {
+    if (isProduction) {
       logger.info('Registering production alert thresholds');
       await registerProductionThresholds();
     } else {
-      logger.info(`Using default thresholds for ${env.currentEnv} environment`);
+      logger.info(`Using default thresholds for non-production environment`);
     }
 
     logger.info('Monitoring system initialized successfully');

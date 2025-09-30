@@ -768,14 +768,3 @@ export interface CatererFormData {
   privacy_accepted: boolean;
 }
 
-export type CatererListingStep =
-  | 'basic_info'
-  | 'location'
-  | 'services'
-  | 'pricing'
-  | 'menus'
-  | 'media'
-  | 'policies'
-  | 'verification'
-  | 'review';
-

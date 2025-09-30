@@ -14,7 +14,7 @@ export function getEnvironmentConfig() {
     sentryEnabled: !!appEnv.sentry?.dsn,
     sentryDSN: appEnv.sentry?.dsn,
     analyticsEnabled: appEnv.features.enableAnalytics,
-    gaTrackingId: (process.env.NEXT_PUBLIC_GA_TRACKING as string_ as string) || undefined,
+    gaTrackingId: (process.env.NEXT_PUBLIC_GA_TRACKING as string) || undefined,
     name: appEnv.environment || 'development',
     apiUrl: appEnv.app.apiUrl,
   } as const;
