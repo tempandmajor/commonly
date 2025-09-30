@@ -1,0 +1,30 @@
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+
+User-agent: Twitterbot
+Allow: /
+Disallow: /admin
+
+User-agent: facebookexternalhit
+Allow: /
+Disallow: /admin
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# Additional security directives
+Disallow: /.env
+Disallow: /config/
+Disallow: /logs/
+Disallow: /debug/
+
+# Sitemap location
+Sitemap: https://commonlyapp.com/sitemap.xml

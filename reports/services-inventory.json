@@ -1,0 +1,1492 @@
+{
+  "ai": {
+    "name": "ai",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "lightweightAI.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "analytics": {
+    "name": "analytics",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "logUserAction.ts",
+        "secureAnalytics.ts"
+      ],
+      "missingStandardDirs": [
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This file exports the unified analytics service API, hooks, and related types.",
+      "* New code should use the exported API objects directly:",
+      "* Legacy code can continue to use the compatibility exports:",
+      "export { analyticsAPI } from './api/analyticsAPI';",
+      "export { useAnalytics, useTrackComponentVisibility } from './hooks/useAnalytics';",
+      "export * from './core/types';",
+      "export { getDeviceInfo, getDeviceType } from './utils/deviceInfo';",
+      "export {"
+    ]
+  },
+  "api": {
+    "name": "api",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "analyticsAPI.ts",
+        "locationAPI.ts",
+        "managementAPI.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This file exports the unified API client service API and related types.",
+      "* New code should use the exported API objects directly:",
+      "* Legacy code can continue to use the compatibility exports:",
+      "export { ApiClient } from './client/apiClient';",
+      "export {",
+      "export {",
+      "export * from './core/types';",
+      "export {",
+      "export * as AnalyticsAPI from './analytics';",
+      "export * as LocationAPI from './location';",
+      "export * as ManagementAPI from './management';",
+      "export {",
+      "export * as AnalyticsAPILegacy from './compatibility/analyticsAPI';",
+      "export * as LocationAPILegacy from './compatibility/locationAPI';",
+      "export * as ManagementAPILegacy from './compatibility/managementAPI';"
+    ]
+  },
+  "auth": {
+    "name": "auth",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [],
+      "missingStandardDirs": [
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This file provides the main exports for the authentication service module.",
+      "// Core API exports",
+      "export { authAPI } from './api/authAPI';",
+      "// Hook exports for React components",
+      "export { useAuth, AuthProvider } from './hooks/useAuth';",
+      "// Type exports",
+      "export type {",
+      "export {"
+    ]
+  },
+  "campaigns": {
+    "name": "campaigns",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "promotionalCampaigns.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "community": {
+    "name": "community",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": false,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": false
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "types.ts"
+      ],
+      "missingStandardDirs": [
+        "core",
+        "components",
+        "edge",
+        "tests"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "export * from './api/core';",
+      "export * from './subscription/api';",
+      "export * from './hooks/useCommunity';",
+      "export * from './subscription/hooks';",
+      "export * from './types';",
+      "export { LegacyCommunityService };"
+    ]
+  },
+  "content": {
+    "name": "content",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "media.ts",
+        "mutations.ts",
+        "queries.ts",
+        "types.ts",
+        "validation.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export * from './types';",
+      "export * from './validation';",
+      "export * from './mutations';",
+      "export * from './queries';",
+      "export * from './media';",
+      "// Re-export content types and status for backward compatibility",
+      "export { ContentType, ContentStatus };"
+    ]
+  },
+  "database": {
+    "name": "database",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [],
+      "missingStandardDirs": [
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This file exports the consolidated Database Access Service API.",
+      "export * from './core/types';",
+      "export { databaseClient } from './api/databaseClient';",
+      "export { createTableOperations, tablesMap } from './api/tableOperations';",
+      "export { transactionManager } from './api/transactionManager';",
+      "export { RlsPolicyManager } from './api/rlsPolicies';",
+      "export {",
+      "export { databaseUtils } from './utils/databaseUtils';",
+      "export { legacyDatabaseService };",
+      "// For direct import compatibility, re-export the legacy API",
+      "// Default export of the complete database service",
+      "export default databaseService;"
+    ]
+  },
+  "earnings": {
+    "name": "earnings",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": true,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "earningsService.ts",
+        "earningsTracker.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": false,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "event": {
+    "name": "event",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": false,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "maintenance.ts",
+        "mutations.ts",
+        "queries.ts",
+        "search.ts",
+        "streamService.ts"
+      ],
+      "missingStandardDirs": [
+        "core",
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "export * from './types';",
+      "export { EventAPI };",
+      "export * from './hooks/useEvents';",
+      "export * from './queries';",
+      "export * from './search';",
+      "export * from './maintenance';",
+      "export * from './mutations';",
+      "export * from './streamService';",
+      "export * from '../catererService'; // Add caterer service export"
+    ]
+  },
+  "fees": {
+    "name": "fees",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "feeCalculator.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "livekit": {
+    "name": "livekit",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "export interface LiveEventToken {",
+      "export interface LiveEventOptions {",
+      "export interface LiveEventStats {",
+      "export async function getLiveEventToken(options: LiveEventOptions): Promise<LiveEventToken> {",
+      "export async function joinLiveEvent(",
+      "export function leaveLiveEvent(room: Room): void {",
+      "export async function toggleAudio(room: Room, enabled: boolean): Promise<void> {",
+      "export async function toggleVideo(room: Room, enabled: boolean): Promise<void> {",
+      "export function getLiveEventStats(room: Room): LiveEventStats {"
+    ]
+  },
+  "media": {
+    "name": "media",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "cdnUtils.ts",
+        "fileManager.ts",
+        "imageOptimizer.ts",
+        "types.ts",
+        "uploader.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export * from './types';",
+      "export * from './imageOptimizer';",
+      "export * from './uploader';",
+      "export * from './fileManager';",
+      "export * from './cdnUtils';"
+    ]
+  },
+  "message": {
+    "name": "message",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "cache.ts",
+        "conversation.ts",
+        "types.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export const sendMessage = async (",
+      "export const getMessages = async (",
+      "export const markMessageAsRead = async (messageId: string): Promise<boolean> => {",
+      "export const markAllMessagesAsRead = async (",
+      "export const deleteMessage = async (messageId: string): Promise<boolean> => {",
+      "export const subscribeToConversation = (conversationId: string, callback: (message: Message) => void) => {",
+      "export const subscribeToUserConversations = (userId: string, callback: (conversation: Conversation) => void) => {",
+      "export const subscribeToReadStatus = (conversationId: string, callback: (messageId: string) => void) => {",
+      "// Re-export everything from conversation module and types",
+      "export * from './types';",
+      "export * from './conversation';",
+      "export const messageService = {"
+    ]
+  },
+  "mock": {
+    "name": "mock",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export const ENABLE_REAL_DATA = true;",
+      "export const ENABLE_MOCKS = false;",
+      "export const MOCK_DELAY = 0;",
+      "export const mockEvents = null;",
+      "export const mockProducts = null;",
+      "export const mockProjects = null;",
+      "export const mockReports = null;",
+      "export const mockUsers = null;",
+      "export const mockCategories = [];",
+      "export const mockLocations = null;",
+      "export const mockStoreProducts = null;",
+      "export const mockTickets = null;",
+      "export const simulateDelay = async (delay: number = 0) => {",
+      "export const shouldUseMock = (feature?: string): boolean => {",
+      "export const useRealData = () => true;"
+    ]
+  },
+  "notification": {
+    "name": "notification",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [],
+      "missingStandardDirs": [
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This file exports the unified notification service API, hooks, and related types.",
+      "* New code should use the exported API objects directly:",
+      "* Legacy code can continue to use the compatibility exports:",
+      "export { notificationAPI } from './api/notificationAPI';",
+      "export {",
+      "export * from './core/types';",
+      "export * from './utils/notificationUtils';",
+      "export {"
+    ]
+  },
+  "order": {
+    "name": "order",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "checkout.ts",
+        "management.ts",
+        "purchase.ts",
+        "queries.ts",
+        "stockUpdate.ts",
+        "validation.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export * from \"./management\";",
+      "export * from \"./queries\";",
+      "export * from \"./purchase\";"
+    ]
+  },
+  "payment": {
+    "name": "payment",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": true,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "allOrNothingProcessor.ts",
+        "checkoutService.ts",
+        "connectedCheckout.ts",
+        "consolidated.ts",
+        "creditTypes.ts",
+        "enhancedPaymentService.ts",
+        "paymentMethodEdge.ts",
+        "paymentPreferences.ts",
+        "paymentVerification.ts",
+        "platformCredit.ts",
+        "standardCheckout.ts",
+        "stripeCheckout.ts",
+        "subscriptionService.ts",
+        "ticketManagement.ts",
+        "types.ts",
+        "verification.ts",
+        "webhookEndpoint.ts",
+        "webhookHandlers.ts"
+      ],
+      "missingStandardDirs": [
+        "components"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This module exports the consolidated payment service functionality.",
+      "// Core exports",
+      "export * from './core/types';",
+      "export * from './core/constants';",
+      "export * from './core/errors';",
+      "export * from './core/client';",
+      "// API exports - use explicit re-exports to avoid ambiguity",
+      "export { creditAPI, walletAPI, transactionsAPI, stripeAPI, paymentMethodsAPI };",
+      "// Utility exports - use explicit re-exports to avoid ambiguity",
+      "export { formatters, validators };",
+      "// For backward compatibility, re-export the original functions",
+      "export { checkout, initiateCheckout, verifyCheckoutPayment as verifyPayment } from './checkoutService';",
+      "export * from './standardCheckout';",
+      "export * from './connectedCheckout';",
+      "export * from './platformCredit';",
+      "export * from './verification';",
+      "// Also export compatibility layers",
+      "export * as LegacyPlatformCredit from './compatibility/platformCredit';",
+      "export * as LegacyWallet from './compatibility/wallet';",
+      "export const PAYMENT_SERVICE_INFO = {"
+    ]
+  },
+  "platformCredit": {
+    "name": "platformCredit",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export interface PlatformCreditTransaction {",
+      "export interface PlatformCreditBalance {",
+      "export const getPlatformCreditBalance = async (userId: string): Promise<number> => {",
+      "export const getCreditTransactionHistory = async (userId: string): Promise<PlatformCreditTransaction[]> => {",
+      "export const addPlatformCredit = async (",
+      "export const deductPlatformCredit = async (",
+      "export const transferPlatformCredit = async (",
+      "export const refundPlatformCredit = async (",
+      "export const validateCreditTransaction = (",
+      "export const canUsePlatformCredit = (options: unknown): boolean => {",
+      "export const processPlatformCredit = async (options: unknown): Promise<any> => {",
+      "export const updatePlatformCredit = addPlatformCredit;",
+      "export const hasEnoughCredit = async (userId: string, amount: number): Promise<boolean> => {",
+      "export const addCreditTransaction = addPlatformCredit;",
+      "export const getPlatformCreditTransactions = getCreditTransactionHistory;",
+      "export const usePlatformCredit = deductPlatformCredit;",
+      "export const getPlatformCreditStats = async (userId: string) => {"
+    ]
+  },
+  "podcast": {
+    "name": "podcast",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "comments.ts",
+        "mutations.ts",
+        "podcastService.ts",
+        "queries.ts",
+        "types.ts",
+        "utils.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "// Consolidated podcast service exports",
+      "export * from './queries';",
+      "export * from './mutations';",
+      "export * from './comments';",
+      "export * from './types';",
+      "export * from './utils';",
+      "// Make sure these specific functions are properly exported",
+      "export { getPodcast, getPodcasts, getFeaturedPodcasts } from './queries';",
+      "export { createPodcast, updatePodcast, deletePodcast, incrementPodcastPlays } from './mutations';"
+    ]
+  },
+  "product": {
+    "name": "product",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "analytics.ts",
+        "categories.ts",
+        "mutations.ts",
+        "queries.ts",
+        "types.ts",
+        "utils.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "profile": {
+    "name": "profile",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [],
+      "missingStandardDirs": [
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This file exports the unified User Profile service API and related types.",
+      "* New code should use the exported API objects directly:",
+      "* Legacy code can continue to use the compatibility exports:",
+      "export { profileAPI } from './api/profileAPI';",
+      "export {",
+      "export * from './core/types';",
+      "export { profileUtils } from './utils/profileUtils';",
+      "export {"
+    ]
+  },
+  "promotionService": {
+    "name": "promotionService",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "analytics.ts",
+        "api.ts",
+        "create.ts",
+        "credits.ts",
+        "types.ts",
+        "update.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export const updatePromotionStatus = async ("
+    ]
+  },
+  "search": {
+    "name": "search",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "cache.ts",
+        "types.ts",
+        "utils.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export interface SearchResult<T> {",
+      "export interface EventSearchResult {",
+      "export interface VenueSearchResult {",
+      "export const searchEvents = async (",
+      "export const searchVenues = async (",
+      "export const searchAll = async (query: string): Promise<{"
+    ]
+  },
+  "storage": {
+    "name": "storage",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "supabaseStorage.ts"
+      ],
+      "missingStandardDirs": [
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* This file exports the unified storage service API and related types.",
+      "* New code should use the exported API objects directly:",
+      "* Legacy code can continue to use the compatibility exports:",
+      "export { storageClient } from './api/storageClient';",
+      "export { storageOperations } from './api/storageOperations';",
+      "export type {",
+      "export {",
+      "export {",
+      "export {"
+    ]
+  },
+  "store": {
+    "name": "store",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": false,
+        "utils": true,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": true,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "storeService.ts"
+      ],
+      "missingStandardDirs": [
+        "core",
+        "components",
+        "edge"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "* It exports all the components of the service for easy access.",
+      "export * from './types';",
+      "export * from './api/core';",
+      "export * from './hooks/useStore';",
+      "export * from './utils/errorHandling';",
+      "export * from './utils/transformers';",
+      "export * from './utils/cache';",
+      "// These are exported without namespace to maintain backward compatibility",
+      "export * from './compatibility';"
+    ]
+  },
+  "stripe": {
+    "name": "stripe",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "connect.ts",
+        "identity-verification.ts",
+        "platformFees.ts",
+        "stripeClient.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export interface PaymentIntent {",
+      "export interface CheckoutSession {",
+      "export interface StripeCustomer {",
+      "export const createPaymentIntent = async (",
+      "export const createCheckoutSession = async (",
+      "export const redirectToCheckout = async (sessionId: string): Promise<boolean> => {",
+      "export const confirmPayment = async (",
+      "export const createCustomer = async (",
+      "export const getCustomerPaymentMethods = async (",
+      "export const createSetupIntent = async (",
+      "export const createRefund = async (",
+      "export const getPaymentHistory = async (",
+      "export const createSubscription = async (",
+      "export const cancelSubscription = async (",
+      "export const validateWebhookSignature = async (",
+      "export const getAccountBalance = async (): Promise<any | null> => {",
+      "export const stripe = getStripe;",
+      "// Default export for backward compatibility",
+      "export default {"
+    ]
+  },
+  "stripe-connect": {
+    "name": "stripe-connect",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "config.ts",
+        "history.ts",
+        "payments.ts",
+        "transfers.ts",
+        "types.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export { createStripeTransfer, reverseStripeTransfer } from './transfers';"
+    ]
+  },
+  "supabase": {
+    "name": "supabase",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "client.ts",
+        "edge-functions.ts",
+        "types.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export * from './types';",
+      "export { supabaseService } from './client';",
+      "export default supabaseService;"
+    ]
+  },
+  "transactions": {
+    "name": "transactions",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "transactionService.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "transcription": {
+    "name": "transcription",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "transcriptionService.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "user": {
+    "name": "user",
+    "structure": {
+      "directories": {
+        "api": true,
+        "core": true,
+        "utils": false,
+        "hooks": true,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": true
+      },
+      "hasReadme": true,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "userState.ts"
+      ],
+      "missingStandardDirs": [
+        "utils",
+        "components",
+        "edge",
+        "compatibility"
+      ],
+      "missingReadme": false,
+      "missingIndex": false
+    },
+    "exports": [
+      "export { api, authAPI, profileAPI, storageAPI, settingsAPI, preferencesAPI };",
+      "export { userHooks };",
+      "export * from './core/types';",
+      "export * from './core/constants';",
+      "export const checkUsernameAvailability = async (username: string): Promise<boolean> => {",
+      "export const uploadProfileImage = async (userId: string, imageFile: File): Promise<string> => {",
+      "export const getCurrentUser = api.auth.getCurrentUser;",
+      "export const getUserById = api.auth.getUserById;",
+      "export const getUserByUsername = api.auth.getUserByUsername;",
+      "export const signOut = api.auth.signOut;",
+      "export const updateUserProfile = api.profile.updateUserProfile;",
+      "export const createUserProfile = api.profile.createUserProfile;",
+      "export const searchUsers = api.profile.searchUsers;",
+      "export const getUserSettings = api.settings.getUserSettings;",
+      "export const updateUserSettings = api.settings.updateUserSettings;",
+      "export const getUserPreferences = api.preferences.getUserPreferences;",
+      "export const updateUserPreferences = api.preferences.updateUserPreferences;"
+    ]
+  },
+  "validation": {
+    "name": "validation",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": false
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "inputValidation.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": true
+    },
+    "exports": []
+  },
+  "venue": {
+    "name": "venue",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "venueConverter.ts",
+        "venueOperations.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export * from './venueOperations';",
+      "export const updateVenueStatus = async (venueId: string, status: 'pending' | 'active' | 'suspended'): Promise<boolean> => {",
+      "export const toggleFeatured = async (venueId: string): Promise<boolean> => {"
+    ]
+  },
+  "wallet": {
+    "name": "wallet",
+    "structure": {
+      "directories": {
+        "api": false,
+        "core": false,
+        "utils": false,
+        "hooks": false,
+        "components": false,
+        "edge": false,
+        "compatibility": false,
+        "tests": false
+      },
+      "hasReadme": false,
+      "hasIndex": true
+    },
+    "potentialIssues": {
+      "legacyPatterns": [
+        "balance.ts",
+        "paymentMethods.ts",
+        "referrals.ts",
+        "stripePaymentService.ts",
+        "transactions.ts",
+        "types.ts",
+        "walletService.ts",
+        "webhookHandler.ts",
+        "webhookLogger.ts"
+      ],
+      "missingStandardDirs": [
+        "api",
+        "core",
+        "utils",
+        "hooks",
+        "components",
+        "edge",
+        "compatibility",
+        "tests"
+      ],
+      "missingReadme": true,
+      "missingIndex": false
+    },
+    "exports": [
+      "export const withdrawFunds = async (",
+      "export const transferToUser = async (",
+      "export * from './transactions';",
+      "export * from './balance';",
+      "export { getWalletBalance, getWalletTransactions } from './walletService';"
+    ]
+  }
+}

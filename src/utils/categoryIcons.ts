@@ -1,0 +1,37 @@
+import {
+  LucideIcon,
+  Music,
+  Utensils,
+  Film,
+  Palette,
+  Globe,
+  Cpu,
+  Briefcase,
+  GraduationCap,
+  Heart,
+  Trophy,
+  HandHeart,
+  Mic2,
+  Theater,
+  Store,
+  Scissors,
+} from 'lucide-react';
+import { EventCategory } from '@/lib/types/event';
+
+export const categoryIcons: Record<EventCategory, LucideIcon> = {
+  [EventCategory.MusicFestivals]: Music,
+  [EventCategory.FoodWineFestivals]: Utensils,
+  [EventCategory.FilmFestivals]: Film,
+  [EventCategory.ArtExhibitions]: Palette,
+  [EventCategory.CulturalFestivals]: Globe,
+  [EventCategory.TechStartupEvents]: Cpu,
+  [EventCategory.BusinessConferences]: Briefcase,
+  [EventCategory.EducationalWorkshops]: GraduationCap,
+  [EventCategory.FitnessWellnessEvents]: Heart,
+  [EventCategory.SportsEvents]: Trophy,
+  [EventCategory.CharitableFundraisers]: HandHeart,
+  [EventCategory.ComedyShows]: Mic2,
+  [EventCategory.PerformingArts]: Theater,
+  [EventCategory.PopupMarkets]: Store,
+  [EventCategory.FashionEvents]: Scissors,
+};

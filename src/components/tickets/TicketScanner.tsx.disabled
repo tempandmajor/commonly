@@ -1,0 +1,276 @@
+import React, { useState, useRef } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import { QrCode, Check, X, List } from 'lucide-react';
+import { validateTicket, scanTicket, Ticket } from '@/services/ticketService';
+import { useAuth } from '@/providers/AuthProvider';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+// Temporary stub function until proper implementation
+const verifyTicketByCode = async (ticketCode: string, eventId: string): Promise<Ticket | null> => {
+  // This is a temporary stub - replace with proper implementation
+  console.warn('verifyTicketByCode is not implemented yet');
+  return null;
+};
+
+// Import QR scanner (this would need to be installed)
+// import QrReader from 'react-qr-reader';
+
+interface TicketScannerProps {
+  eventId: string;
+  onTicketValidated?: (ticket: Ticket) => void;
+}
+
+const TicketScanner: React.FC<TicketScannerProps> = ({ eventId, onTicketValidated }) => {
+  const [scanMode, setScanMode] = useState<'manual' | 'camera'>('manual');
+  const [ticketCode, setTicketCode] = useState('');
+  const [scanning, setScanning] = useState(false);
+  const [scanResult, setScanResult] = useState<{ticket: Ticket | null, success: boolean} | null>(null);
+  const { user } = useAuth();
+  const [showValidationDialog, setShowValidationDialog] = useState(false);
+  
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const resetScan = () => {
+    setScanResult(null);
+    setTicketCode('');
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const handleManualSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
+    if (!ticketCode.trim()) {
+      toast.error('Please enter a ticket code');
+      return;
+    }
+    
+    setScanning(true);
+    try {
+      const ticket = await verifyTicketByCode(ticketCode.trim(), eventId);
+      
+      if (!ticket) {
+        setScanResult({ ticket: null, success: false });
+        toast.error('Invalid ticket code');
+      } else if (ticket.status !== 'active') {
+        setScanResult({ ticket, success: false });
+        toast.error(`Ticket is ${ticket.status}`);
+      } else {
+        setScanResult({ ticket, success: true });
+        setShowValidationDialog(true);
+      }
+    } catch (error) {
+      toast.error('Failed to verify ticket');
+      setScanResult({ ticket: null, success: false });
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const handleQRScan = (data: string | null) => {
+    if (data) {
+      try {
+        const scannedData = JSON.parse(data);
+        if (scannedData.ticketCode) {
+          setTicketCode(scannedData.ticketCode);
+          handleManualSubmit();
+        }
+      } catch (error) {
+        toast.error('Invalid QR code format');
+      }
+    }
+  };
+
+  const handleValidateTicket = async () => {
+    if (!scanResult?.ticket || !user) return;
+    
+    setScanning(true);
+    try {
+      const isValid = await validateTicket(scanResult.ticket.id);
+      
+      if (isValid) {
+        toast.success('Ticket successfully validated');
+        if (onTicketValidated) {
+          onTicketValidated(scanResult.ticket);
+        }
+      }
+      
+      setShowValidationDialog(false);
+      setScanResult(null);
+      setTicketCode('');
+    } catch (error) {
+      toast.error('Failed to validate ticket');
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  return (
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center">
+            <QrCode className="mr-2 h-5 w-5" />
+            Ticket Scanner
+          </CardTitle>
+        </CardHeader>
+        
+        <CardContent>
+          <div className="flex justify-center mb-4">
+            <div className="inline-flex rounded-md shadow-sm">
+              <Button 
+                variant={scanMode === 'manual' ? 'default' : 'outline'}
+                className="rounded-r-none"
+                onClick={() => setScanMode('manual')}
+              >
+                <List className="mr-2 h-4 w-4" />
+                Manual Entry
+              </Button>
+              <Button 
+                variant={scanMode === 'camera' ? 'default' : 'outline'}
+                className="rounded-l-none"
+                onClick={() => setScanMode('camera')}
+              >
+                <QrCode className="mr-2 h-4 w-4" />
+                QR Scanner
+              </Button>
+            </div>
+          </div>
+          
+          {scanMode === 'manual' ? (
+            <form onSubmit={handleManualSubmit} className="space-y-4">
+              <div>
+                <Input
+                  ref={inputRef}
+                  type="text"
+                  placeholder="Enter ticket code"
+                  value={ticketCode}
+                  onChange={(e) => setTicketCode(e.target.value)}
+                  autoComplete="off"
+                  className="text-center text-lg tracking-wider"
+                />
+              </div>
+              
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={scanning || !ticketCode.trim()}
+              >
+                {scanning ? "Checking..." : "Verify Ticket"}
+              </Button>
+            </form>
+          ) : (
+            <div className="text-center">
+              {/* QR scanner would be integrated here */}
+              <p className="mb-4 text-muted-foreground">
+                Point your camera at the ticket QR code to scan
+              </p>
+              <div className="border-2 border-dashed border-muted-foreground/50 rounded-md p-4 h-64 flex items-center justify-center">
+                {/* Replace this with actual QR scanner component */}
+                <p className="text-muted-foreground">
+                  Camera QR scanning requires additional setup. 
+                  Please use manual entry for now or install a QR scanner library.
+                </p>
+                {/* 
+                <QrReader
+                  delay={300}
+                  onError={handleScanError}
+                  onScan={handleQRScan}
+                  style={{ width: '100%' }}
+                />
+                */}
+              </div>
+            </div>
+          )}
+          
+          {scanResult && !showValidationDialog && (
+            <div className={`mt-6 p-4 rounded-lg text-center ${scanResult.success ? 'bg-success/20' : 'bg-destructive/20'}`}>
+              {scanResult.success ? (
+                <>
+                  <div className="flex items-center justify-center text-success mb-2">
+                    <Check className="h-6 w-6" />
+                    <span className="font-medium ml-2">Valid Ticket</span>
+                  </div>
+                  <p className="text-sm">
+                    {scanResult.ticket?.userName}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-center text-destructive mb-2">
+                    <X className="h-6 w-6" />
+                    <span className="font-medium ml-2">
+                      {scanResult.ticket ? `Ticket is ${scanResult.ticket.status}` : 'Invalid Ticket'}
+                    </span>
+                  </div>
+                  {scanResult.ticket && (
+                    <p className="text-sm">
+                      {scanResult.ticket.userName}
+                    </p>
+                  )}
+                </>
+              )}
+              
+              <Button onClick={resetScan} variant="outline" className="mt-2">
+                Scan Another
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Validate Ticket</DialogTitle>
+          </DialogHeader>
+          
+          {scanResult?.ticket && (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-success/20 p-4">
+                <div className="flex items-center justify-center text-success mb-2">
+                  <Check className="h-6 w-6" />
+                  <span className="font-medium ml-2">Valid Ticket</span>
+                </div>
+
+                <div className="space-y-2 mt-4">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Ticket Code:</span>
+                    <span className="font-medium">{scanResult.ticket.ticketCode}</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Attendee:</span>
+                    <span className="font-medium">{scanResult.ticket.userName}</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Purchase Date:</span>
+                    <span className="font-medium">
+                      {scanResult.ticket.purchaseDate ? scanResult.ticket.purchaseDate.toLocaleDateString() : 'N/A'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setShowValidationDialog(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleValidateTicket} disabled={scanning}>
+                  {scanning ? "Processing..." : "Validate Ticket"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default TicketScanner;

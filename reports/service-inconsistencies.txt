@@ -1,0 +1,84 @@
+ai is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+analytics is missing standard directories: components, edge
+api is missing standard directories: api, components, edge
+auth is missing standard directories: components, edge
+campaigns is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+community is missing standard directories: core, components, edge, tests
+content is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+database is missing standard directories: components, edge
+earnings is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+event is missing standard directories: core, components, edge
+fees is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+livekit is missing standard directories: api, core, utils, components, edge, compatibility, tests
+media is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+message is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+mock is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+notification is missing standard directories: components, edge
+order is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+payment is missing standard directories: components
+platformCredit is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+podcast is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+product is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+profile is missing standard directories: components, edge
+promotionService is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+search is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+storage is missing standard directories: components, edge
+store is missing standard directories: core, components, edge
+stripe is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+stripe-connect is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+supabase is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+transactions is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+transcription is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+user is missing standard directories: utils, components, edge, compatibility
+validation is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+venue is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+wallet is missing standard directories: api, core, utils, hooks, components, edge, compatibility, tests
+ai has legacy file patterns: lightweightAI.ts
+analytics has legacy file patterns: logUserAction.ts, secureAnalytics.ts
+api has legacy file patterns: analyticsAPI.ts, locationAPI.ts, managementAPI.ts
+campaigns has legacy file patterns: promotionalCampaigns.ts
+community has legacy file patterns: types.ts
+content has legacy file patterns: media.ts, mutations.ts, queries.ts, types.ts, validation.ts
+earnings has legacy file patterns: earningsService.ts, earningsTracker.ts
+event has legacy file patterns: maintenance.ts, mutations.ts, queries.ts, search.ts, streamService.ts
+fees has legacy file patterns: feeCalculator.ts
+media has legacy file patterns: cdnUtils.ts, fileManager.ts, imageOptimizer.ts, types.ts, uploader.ts
+message has legacy file patterns: cache.ts, conversation.ts, types.ts
+order has legacy file patterns: checkout.ts, management.ts, purchase.ts, queries.ts, stockUpdate.ts, validation.ts
+payment has legacy file patterns: allOrNothingProcessor.ts, checkoutService.ts, connectedCheckout.ts, consolidated.ts, creditTypes.ts, enhancedPaymentService.ts, paymentMethodEdge.ts, paymentPreferences.ts, paymentVerification.ts, platformCredit.ts, standardCheckout.ts, stripeCheckout.ts, subscriptionService.ts, ticketManagement.ts, types.ts, verification.ts, webhookEndpoint.ts, webhookHandlers.ts
+podcast has legacy file patterns: comments.ts, mutations.ts, podcastService.ts, queries.ts, types.ts, utils.ts
+product has legacy file patterns: analytics.ts, categories.ts, mutations.ts, queries.ts, types.ts, utils.ts
+promotionService has legacy file patterns: analytics.ts, api.ts, create.ts, credits.ts, types.ts, update.ts
+search has legacy file patterns: cache.ts, types.ts, utils.ts
+storage has legacy file patterns: supabaseStorage.ts
+store has legacy file patterns: storeService.ts
+stripe has legacy file patterns: connect.ts, identity-verification.ts, platformFees.ts, stripeClient.ts
+stripe-connect has legacy file patterns: config.ts, history.ts, payments.ts, transfers.ts, types.ts
+supabase has legacy file patterns: client.ts, edge-functions.ts, types.ts
+transactions has legacy file patterns: transactionService.ts
+transcription has legacy file patterns: transcriptionService.ts
+user has legacy file patterns: userState.ts
+validation has legacy file patterns: inputValidation.ts
+venue has legacy file patterns: venueConverter.ts, venueOperations.ts
+wallet has legacy file patterns: balance.ts, paymentMethods.ts, referrals.ts, stripePaymentService.ts, transactions.ts, types.ts, walletService.ts, webhookHandler.ts, webhookLogger.ts
+ai is missing README.md
+campaigns is missing README.md
+content is missing README.md
+fees is missing README.md
+media is missing README.md
+message is missing README.md
+mock is missing README.md
+order is missing README.md
+platformCredit is missing README.md
+podcast is missing README.md
+product is missing README.md
+promotionService is missing README.md
+search is missing README.md
+stripe is missing README.md
+stripe-connect is missing README.md
+supabase is missing README.md
+transactions is missing README.md
+transcription is missing README.md
+validation is missing README.md
+venue is missing README.md
+wallet is missing README.md
