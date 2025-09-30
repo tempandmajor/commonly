@@ -4,9 +4,8 @@ import { trackEvent } from '@/services/analyticsService';
 
 const getSiteUrl = () => {
   if (typeof window !== 'undefined' && window.location) return window.location.origin;
-  // Fallback to env (Vite) if on server-side rendering contexts
-  // @ts-ignore
-  return import.meta?.env?.VITE_SITE_URL || 'http://localhost:5173';
+  // Fallback to env if on server-side rendering contexts
+  return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 };
 
 export const generateCheckoutUrl = (productId: string, quantity: number): string => {

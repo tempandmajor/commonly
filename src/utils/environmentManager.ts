@@ -34,12 +34,12 @@ export function initializeEnvironment(): void {
 
 /**
  * Get a required environment variable or throw an error if it's not defined
- * @param key Environment variable key
+ * @param key Environment variable key (use NEXT_PUBLIC_ prefix for client-side vars)
  * @param fallback Optional fallback value
  * @returns The environment variable value
  */
 export function getRequiredEnvVar(key: string, fallback?: string): string {
-  const value = import.meta.env[key];
+  const value = process.env[key];
 
   if (!value) {
     if (fallback !== undefined) {
@@ -58,8 +58,8 @@ export function getRequiredEnvVar(key: string, fallback?: string): string {
  * @returns Boolean indicating if the feature is enabled
  */
 export function isFeatureEnabled(flagName: string): boolean {
-  const envVar = `VITE_FEATURE_${flagName.toUpperCase()}`;
-  return import.meta.env[envVar] === 'true';
+  const envVar = `NEXT_PUBLIC_FEATURE_${flagName.toUpperCase()}`;
+  return process.env[envVar] === 'true';
 }
 
 /**

@@ -26,16 +26,15 @@ export const EnvironmentDebug: React.FC<EnvironmentDebugProps> = ({ show = false
   }
 
   const envVars = {
-    VITE_SUPABASE_URL: (import.meta as any).env?.VITE_SUPABASE_URL as string,
-    VITE_SUPABASE_ANON_KEY: (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string,
-    VITE_SUPABASE_PROJECT_ID: (import.meta as any).env?.VITE_SUPABASE_PROJECT_ID as string,
-    VITE_APP_URL: (import.meta as any).env?.VITE_APP_URL as string,
-    VITE_STRIPE_PUBLISHABLE_KEY: (import.meta as any).env?.VITE_STRIPE_PUBLISHABLE_KEY as string,
-    NODE_ENV: (import.meta as any).env?.MODE as string,
-    MODE: (import.meta as any).env?.MODE as string,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SUPABASE_PROJECT_ID: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NODE_ENV: process.env.NODE_ENV,
   };
 
-  const criticalVars = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'];
+  const criticalVars = ['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY'];
   const missingCritical = criticalVars.filter(key => !envVars[key as keyof typeof envVars]);
 
   const getStatusIcon = (value: string | undefined) => {

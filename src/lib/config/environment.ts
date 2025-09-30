@@ -1,58 +1,40 @@
 // Environment configuration for external services
+// Next.js uses process.env for environment variables
 export const config = {
   // Supabase Configuration
   supabase: {
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL as string || (import.meta as any)?.env?.VITE_SUPABASE_URL || '',
-    anonKey:
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string ||
-      (import.meta as any)?.env?.VITE_SUPABASE_ANON_KEY ||
-      '',
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
     serviceRoleKey: '',
   },
 
   // Stripe Configuration
   stripe: {
-    publishableKey:
-      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string ||
-      (import.meta as any)?.env?.VITE_STRIPE_PUBLISHABLE_KEY ||
-      '',
+    publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
     secretKey: '',
     webhookSecret: '',
   },
 
   // OpenAI Configuration
   openai: {
-    apiKey:
-      process.env.NEXT_PUBLIC_OPENAI_API_KEY as string || (import.meta as any)?.env?.OPENAI_API_KEY || '',
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
   },
 
   // App Configuration
   app: {
-    url:
-      process.env.NEXT_PUBLIC_APP_URL as string ||
-      (import.meta as any)?.env?.VITE_APP_URL ||
-      'http://localhost:3000',
+    url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   },
 
   // Google Configuration
   google: {
-    apiKey:
-      process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string ||
-      (import.meta as any)?.env?.VITE_GOOGLE_API_KEY ||
-      '',
+    apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '',
   },
 
   // LiveKit Configuration (replaces Agora)
   livekit: {
-    url: process.env.NEXT_PUBLIC_LIVEKIT_URL as string || (import.meta as any)?.env?.VITE_LIVEKIT_URL || '',
-    apiKey:
-      process.env.NEXT_PUBLIC_LIVEKIT_API_KEY as string ||
-      (import.meta as any)?.env?.VITE_LIVEKIT_API_KEY ||
-      '',
-    apiSecret:
-      process.env.NEXT_PUBLIC_LIVEKIT_API_SECRET as string ||
-      (import.meta as any)?.env?.VITE_LIVEKIT_API_SECRET ||
-      '',
+    url: process.env.NEXT_PUBLIC_LIVEKIT_URL || '',
+    apiKey: process.env.NEXT_PUBLIC_LIVEKIT_API_KEY || '',
+    apiSecret: process.env.NEXT_PUBLIC_LIVEKIT_API_SECRET || '',
   },
 };
 

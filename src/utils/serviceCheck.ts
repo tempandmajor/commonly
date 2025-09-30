@@ -138,8 +138,8 @@ export async function checkStorageConnection(): Promise<ServiceCheckResult> {
 export function checkStripeConfiguration(): ServiceCheckResult {
   const startTime = startTimeMeasure();
 
-  // In Vite, public vars are accessed via import.meta.env with VITE_ prefix
-  const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined;
+  // Next.js uses process.env with NEXT_PUBLIC_ prefix for client-side vars
+  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
   if (!publishableKey) {
     const duration = endTimeMeasure(startTime);
@@ -181,15 +181,15 @@ export function checkEnvironmentConfiguration(): EnvironmentCheckResult {
   const startTime = startTimeMeasure();
 
   const requiredEnvVars = [
-    'VITE_SUPABASE_URL',
-    'VITE_SUPABASE_ANON_KEY',
-    'VITE_STRIPE_PUBLISHABLE_KEY',
-    'VITE_LIVEKIT_URL',
-    'VITE_LIVEKIT_API_KEY',
-    'VITE_LIVEKIT_API_SECRET',
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
+    'NEXT_PUBLIC_LIVEKIT_URL',
+    'NEXT_PUBLIC_LIVEKIT_API_KEY',
+    'NEXT_PUBLIC_LIVEKIT_API_SECRET',
   ] as const;
 
-  const missingVars = requiredEnvVars.filter(varName => !(import.meta.env as any)[varName]);
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
   const duration = endTimeMeasure(startTime);
 
@@ -314,7 +314,7 @@ export function displayServiceCheckResults(
   results: ComprehensiveCheckResult,
   showSuccessToasts = false
 ): void {
-  const environment = import.meta.env.MODE as string;
+  const environment = process.env.NODE_ENV;
   const isDev = environment !== 'production';
 
   // Always log the full results
