@@ -8,8 +8,6 @@ const withBundleAnalyzer = bundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Since this was migrated from Vite (SPA), disable static generation
-  output: 'export',
   eslint: {
     // Warning: This temporarily allows production builds to complete even if
     // your project has ESLint errors. Remove this after cleaning up the code.
@@ -26,11 +24,6 @@ const nextConfig = {
     ],
   },
   outputFileTracingRoot: path.join(process.cwd()),
-
-  // Performance optimizations
-  experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-  },
 
   webpack: (config, { isServer }) => {
     // Preserve existing path alias `@` to `src`
@@ -78,36 +71,10 @@ const nextConfig = {
   // Static optimization
   trailingSlash: false,
 
-  // Headers for better caching
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-        ],
-      },
-      {
-        source: '/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ];
+  // Disable automatic static optimization for client-side only app
+  // This prevents pre-rendering errors with client-side auth
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 };
 

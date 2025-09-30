@@ -3,11 +3,11 @@ import { lazy, Suspense } from 'react';
 import { LoadingSpinner } from '@/components/ui/loading';
 
 // Lazy load all components for better performance
-const CatererDiscovery = lazy(() => import('@/pages/CatererDiscovery'));
-const CatererDetails = lazy(() => import('@/pages/CatererDetails'));
-const CatererListingWizard = lazy(() => import('@/pages/CatererListingWizard'));
-const CatererManagement = lazy(() => import('@/pages/CatererManagement'));
-const CatererVerificationSuccess = lazy(() => import('@/pages/CatererVerificationSuccess'));
+const CatererDiscovery = lazy(() => import('@/vite-pages/CatererDiscovery'));
+const CatererDetails = lazy(() => import('@/vite-pages/CatererDetails'));
+const CatererListingWizard = lazy(() => import('@/vite-pages/CatererListingWizard'));
+const CatererManagement = lazy(() => import('@/vite-pages/CatererManagement'));
+const CatererVerificationSuccess = lazy(() => import('@/vite-pages/CatererVerificationSuccess'));
 const CatererBookingManagement = lazy(() => import('@/spa-pages/CatererBookingManagement'));
 
 // Loading wrapper component

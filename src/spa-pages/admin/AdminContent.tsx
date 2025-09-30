@@ -23,7 +23,6 @@ import {
 import {
   Calendar,
   Users,
-  UserGroup,
   Search,
   Filter,
   MoreHorizontal,
@@ -171,7 +170,7 @@ export default function AdminContent() {
             Users
           </TabsTrigger>
           <TabsTrigger value="communities" className="flex items-center gap-2">
-            <UserGroup className="h-4 w-4" />
+            <Users className="h-4 w-4" />
             Communities
           </TabsTrigger>
         </TabsList>

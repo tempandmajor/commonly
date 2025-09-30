@@ -3,11 +3,11 @@ import { lazy, Suspense } from 'react';
 import { LoadingSpinner } from '@/components/ui/loading';
 
 // Lazy load all components for better performance - Updated to use new enhanced pages
-const VenueDiscovery = lazy(() => import('@/pages/VenueDiscovery'));
-const VenueDetails = lazy(() => import('@/pages/VenueDetails'));
-const VenueListingWizard = lazy(() => import('@/pages/VenueListingWizard'));
-const VenueManagement = lazy(() => import('@/pages/VenueManagement'));
-const VenueVerificationSuccess = lazy(() => import('@/pages/VenueVerificationSuccess'));
+const VenueDiscovery = lazy(() => import('@/vite-pages/VenueDiscovery'));
+const VenueDetails = lazy(() => import('@/vite-pages/VenueDetails'));
+const VenueListingWizard = lazy(() => import('@/vite-pages/VenueListingWizard'));
+const VenueManagement = lazy(() => import('@/vite-pages/VenueManagement'));
+const VenueVerificationSuccess = lazy(() => import('@/vite-pages/VenueVerificationSuccess'));
 
 // Loading wrapper component
 const LazyWrapper = ({ children }: { children: React.ReactNode }) => (

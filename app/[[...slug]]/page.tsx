@@ -1,8 +1,6 @@
 import ClientApp from "../ClientApp";
 
-// Force dynamic rendering to prevent static generation of React SPA routes
-export const dynamic = 'force-dynamic';
-
+// Server component wrapper for client-side SPA
 export default function CatchAllPage() {
   return <ClientApp />;
 }
