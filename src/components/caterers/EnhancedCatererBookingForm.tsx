@@ -17,8 +17,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/providers/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { safeSupabaseQuery } from '@/utils/supabaseHelpers';
-
 interface CatererBookingSettings {
   requires_approval?: boolean | undefined;
   response_time_hours?: number | undefined;
@@ -74,13 +72,6 @@ interface AvailabilityInfo {
   message?: string | undefined;
   warning?: string | undefined;
   conflicts?: any[] | undefined;
-}
-
-interface ConflictingBooking {
-  id: string;
-  start_datetime: string;
-  end_datetime: string;
-  booking_status: string;
 }
 
 const EVENT_TYPES = [

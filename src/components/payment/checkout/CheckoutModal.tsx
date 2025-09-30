@@ -34,6 +34,8 @@ import {
   quickCheckoutSchema,
   pledgeSchema,
   CheckoutFormValues,
+  QuickCheckoutFormValues,
+  PledgeFormValues,
   checkoutDefaults,
   quickCheckoutDefaults,
   pledgeDefaults,
@@ -64,13 +66,15 @@ interface CheckoutModalProps {
   currentAmount?: number | undefined;
   quickCheckout?: boolean | undefined;
   savedPaymentMethods?: Array<{
-    id: string | undefined;
+    id: string;
     type: string;
     last4: string;
     brand?: string | undefined;
     isDefault?: boolean | undefined;
-  }>;
+  }> | undefined;
 }
+
+type FormValues = CheckoutFormValues | QuickCheckoutFormValues | PledgeFormValues;
 
 const CheckoutModal: React.FC<CheckoutModalProps> = ({
   open,
@@ -101,7 +105,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   useKeyboardShortcuts([createCancelShortcut(() => onOpenChange(false))]);
 
   // Determine which schema to use
-  const getFormConfig = () => {
+  const getFormConfig = (): { schema: any; defaults: Partial<FormValues> } => {
     if (isAllOrNothing && eventId) {
       return {
         schema: pledgeSchema,
@@ -110,7 +114,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           eventId,
           pledgeAmount: amount,
           ticketQuantity: 1,
-        },
+          paymentMethod: '',
+        } as Partial<PledgeFormValues>,
       };
     } else if (quickCheckout) {
       return {
@@ -118,9 +123,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         defaults: {
           ...quickCheckoutDefaults,
           itemId: eventId || '',
-          itemType: paymentType as unknown,
+          itemType: paymentType as 'ticket' | 'product' | 'subscription' | 'credit',
           quantity: 1,
-        },
+          paymentMethodId: '',
+        } as Partial<QuickCheckoutFormValues>,
       };
     } else {
       return {
@@ -133,28 +139,28 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               name: title,
               quantity: 1,
               price: amount,
-              type: paymentType as unknown,
+              type: paymentType as 'ticket' | 'product' | 'subscription' | 'credit',
             },
           ],
           subtotal: amount,
           total: amount,
-        },
+        } as Partial<CheckoutFormValues>,
       };
     }
   };
 
   const { schema, defaults } = getFormConfig();
 
-  const form = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: defaults,
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema) as any,
+    defaultValues: defaults as any,
   });
 
   // Calculate totals
   useEffect(() => {
     if (!quickCheckout && !isAllOrNothing) {
       const values = form.getValues() as CheckoutFormValues;
-      const subtotal = values.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const subtotal = values.items?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
       const tax = subtotal * 0.08; // 8% tax
 
       // Use the new fee calculator
@@ -164,16 +170,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         includeStripeFees: !isPlatformFee,
       });
 
-      const total = subtotal + tax + feeBreakdown.stripeFee + values.tipAmount - promoDiscount;
+      const tipAmount = (form.watch('tipAmount' as any) as number | undefined) || 0;
+      const total = subtotal + tax + feeBreakdown.stripeFee + tipAmount - promoDiscount;
 
-      form.setValue('subtotal', subtotal);
-      form.setValue('tax', tax);
-      form.setValue('platformFee', feeBreakdown.stripeFee); // Store Stripe fee in platformFee field for display
-      form.setValue('total', total);
+      form.setValue('subtotal' as any, subtotal);
+      form.setValue('tax' as any, tax);
+      form.setValue('platformFee' as any, feeBreakdown.stripeFee);
+      form.setValue('total' as any, total);
     }
-  }, [form.watch('items'), form.watch('tipAmount'), promoDiscount, isPlatformFee]);
+  }, [form.watch('items' as any), form.watch('tipAmount' as any), promoDiscount, isPlatformFee, quickCheckout, isAllOrNothing]);
 
-  const handlePayment = async (values: unknown) => {
+  const handlePayment = async (_values: FormValues) => {
     try {
       setIsProcessing(true);
 
@@ -195,7 +202,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handleApplyPromo = () => {
-    const promoCode = form.getValues('promoCode' as unknown);
+    const promoCode = form.getValues('promoCode' as any) as string | undefined;
     if (promoCode === 'SAVE10') {
       setPromoDiscount(amount * 0.1);
       toast.success('Promo code applied! 10% discount');
@@ -203,6 +210,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       toast.error('Invalid promo code');
     }
   };
+
+  const paymentMethod = form.watch('paymentMethod' as any) as string | undefined;
+  const subtotal = form.watch('subtotal' as any) as number | undefined;
+  const tipAmount = form.watch('tipAmount' as any) as number | undefined;
+  const tax = form.watch('tax' as any) as number | undefined;
+  const platformFee = form.watch('platformFee' as any) as number | undefined;
+  const total = form.watch('total' as any) as number | undefined;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -220,7 +234,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           }
         >
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handlePayment)} className='space-y-6'>
+            <form onSubmit={form.handleSubmit(handlePayment as any)} className='space-y-6'>
               {/* All-or-Nothing Info */}
               {isAllOrNothing && (
                 <AllOrNothingInfo
@@ -240,7 +254,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <div>
                       <p className='font-medium'>{title}</p>
                       <p className='text-sm text-muted-foreground'>
-                        {paymentType === 'ticket' && `${availableTickets} available`}
+                        {paymentType === 'ticket' && availableTickets && `${availableTickets} available`}
                       </p>
                     </div>
                     <span className='font-semibold'>${amount.toFixed(2)}</span>
@@ -267,6 +281,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           <FormField
                             form={form}
                             name='promoCode'
+                            label='Promo Code'
                             placeholder='Enter code'
                             className='flex-1'
                           />
@@ -282,8 +297,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         <RadioGroup
                           defaultValue='0'
                           onValueChange={value => {
-                            const tipAmount = value === 'custom' ? 0 : parseFloat(value);
-                            form.setValue('tipAmount', tipAmount);
+                            const tip = value === 'custom' ? 0 : parseFloat(value);
+                            form.setValue('tipAmount' as any, tip);
                           }}
                         >
                           <div className='flex gap-4'>
@@ -321,12 +336,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <div className='space-y-2 text-sm'>
                         <div className='flex justify-between'>
                           <span className='text-muted-foreground'>Subtotal</span>
-                          <span>${form.watch('subtotal' as unknown)?.toFixed(2) || '0.00'}</span>
+                          <span>${subtotal?.toFixed(2) || '0.00'}</span>
                         </div>
-                        {form.watch('tipAmount' as unknown) > 0 && (
+                        {tipAmount && tipAmount > 0 && (
                           <div className='flex justify-between'>
                             <span className='text-muted-foreground'>Tip</span>
-                            <span>${form.watch('tipAmount' as unknown).toFixed(2)}</span>
+                            <span>${tipAmount.toFixed(2)}</span>
                           </div>
                         )}
                         {promoDiscount > 0 && (
@@ -337,13 +352,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         )}
                         <div className='flex justify-between'>
                           <span className='text-muted-foreground'>Tax</span>
-                          <span>${form.watch('tax' as unknown)?.toFixed(2) || '0.00'}</span>
+                          <span>${tax?.toFixed(2) || '0.00'}</span>
                         </div>
                         {!isPlatformFee && (
                           <div className='flex justify-between'>
                             <span className='text-muted-foreground'>Processing fee</span>
                             <span>
-                              ${form.watch('platformFee' as unknown)?.toFixed(2) || '0.00'}
+                              ${platformFee?.toFixed(2) || '0.00'}
                             </span>
                           </div>
                         )}
@@ -351,7 +366,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         <div className='flex justify-between font-semibold text-base'>
                           <span>Total</span>
                           <span>
-                            ${form.watch('total' as unknown)?.toFixed(2) || amount.toFixed(2)}
+                            ${total?.toFixed(2) || amount.toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -373,9 +388,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   {savedPaymentMethods.length > 0 && (
                     <TabsContent value='saved' className='space-y-3'>
                       <RadioGroup
-                        defaultValue={savedPaymentMethods.find(pm => pm.isDefault)?.id}
+                        defaultValue={savedPaymentMethods.find(pm => pm.isDefault)?.id ?? undefined}
                         onValueChange={value =>
-                          form.setValue('savedPaymentMethodId' as unknown, value)
+                          form.setValue('savedPaymentMethodId' as any, value)
                         }
                       >
                         {savedPaymentMethods.map(method => (
@@ -408,10 +423,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <Button
                         type='button'
                         variant={
-                          form.watch('paymentMethod' as unknown) === 'card' ? 'default' : 'outline'
+                          paymentMethod === 'card' ? 'default' : 'outline'
                         }
                         size='sm'
-                        onClick={() => form.setValue('paymentMethod' as unknown, 'card')}
+                        onClick={() => form.setValue('paymentMethod' as any, 'card')}
                         className='flex flex-col gap-1 h-auto py-3'
                       >
                         <CreditCard className='h-4 w-4' />
@@ -420,12 +435,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <Button
                         type='button'
                         variant={
-                          form.watch('paymentMethod' as unknown) === 'wallet'
+                          paymentMethod === 'wallet'
                             ? 'default'
                             : 'outline'
                         }
                         size='sm'
-                        onClick={() => form.setValue('paymentMethod' as unknown, 'wallet')}
+                        onClick={() => form.setValue('paymentMethod' as any, 'wallet')}
                         className='flex flex-col gap-1 h-auto py-3'
                       >
                         <Wallet className='h-4 w-4' />
@@ -434,10 +449,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <Button
                         type='button'
                         variant={
-                          form.watch('paymentMethod' as unknown) === 'bank' ? 'default' : 'outline'
+                          paymentMethod === 'bank' ? 'default' : 'outline'
                         }
                         size='sm'
-                        onClick={() => form.setValue('paymentMethod' as unknown, 'bank')}
+                        onClick={() => form.setValue('paymentMethod' as any, 'bank')}
                         className='flex flex-col gap-1 h-auto py-3'
                       >
                         <Building2 className='h-4 w-4' />
@@ -446,12 +461,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <Button
                         type='button'
                         variant={
-                          form.watch('paymentMethod' as unknown) === 'crypto'
+                          paymentMethod === 'crypto'
                             ? 'default'
                             : 'outline'
                         }
                         size='sm'
-                        onClick={() => form.setValue('paymentMethod' as unknown, 'crypto')}
+                        onClick={() => form.setValue('paymentMethod' as any, 'crypto')}
                         className='flex flex-col gap-1 h-auto py-3'
                         disabled
                       >
@@ -460,14 +475,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       </Button>
                     </div>
 
-                    {form.watch('paymentMethod' as unknown) === 'card' && (
+                    {paymentMethod === 'card' && (
                       <CreditCardInput form={form} />
                     )}
 
-                    {form.watch('paymentMethod' as unknown) === 'wallet' && (
+                    {paymentMethod === 'wallet' && (
                       <div className='space-y-3'>
                         <RadioGroup
-                          onValueChange={value => form.setValue('walletType' as unknown, value)}
+                          onValueChange={value => form.setValue('walletType' as any, value)}
                         >
                           <div className='flex items-center space-x-3 p-3 border rounded-lg'>
                             <RadioGroupItem value='apple_pay' id='apple_pay' />
@@ -491,7 +506,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       </div>
                     )}
 
-                    {form.watch('paymentMethod' as unknown) === 'bank' && (
+                    {paymentMethod === 'bank' && (
                       <Alert>
                         <Info className='h-4 w-4' />
                         <AlertDescription>
@@ -501,13 +516,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     )}
 
                     {/* Save Payment Method */}
-                    {form.watch('paymentMethod' as unknown) === 'card' && (
+                    {paymentMethod === 'card' && (
                       <div className='flex items-center space-x-2'>
                         <Checkbox
                           id='saveCard'
-                          checked={form.watch('newCard.saveCard' as unknown)}
+                          checked={form.watch('newCard.saveCard' as any) as boolean | undefined}
                           onCheckedChange={checked =>
-                            form.setValue('newCard.saveCard' as unknown, checked)
+                            form.setValue('newCard.saveCard' as any, checked)
                           }
                         />
                         <Label htmlFor='saveCard' className='text-sm'>
@@ -584,9 +599,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <div className='flex items-start space-x-2'>
                       <Checkbox
                         id='understandTerms'
-                        checked={form.watch('understandPledgeTerms' as unknown)}
+                        checked={form.watch('understandPledgeTerms' as any) as boolean | undefined}
                         onCheckedChange={checked =>
-                          form.setValue('understandPledgeTerms' as unknown, checked)
+                          form.setValue('understandPledgeTerms' as any, checked)
                         }
                       />
                       <Label htmlFor='understandTerms' className='text-sm leading-relaxed'>
@@ -597,9 +612,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <div className='flex items-start space-x-2'>
                       <Checkbox
                         id='acceptCancel'
-                        checked={form.watch('acceptCancellationPolicy' as unknown)}
+                        checked={form.watch('acceptCancellationPolicy' as any) as boolean | undefined}
                         onCheckedChange={checked =>
-                          form.setValue('acceptCancellationPolicy' as unknown, checked)
+                          form.setValue('acceptCancellationPolicy' as any, checked)
                         }
                       />
                       <Label htmlFor='acceptCancel' className='text-sm leading-relaxed'>
@@ -612,9 +627,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <div className='flex items-start space-x-2'>
                       <Checkbox
                         id='acceptTerms'
-                        checked={form.watch('acceptTerms' as unknown)}
+                        checked={form.watch('acceptTerms' as any) as boolean | undefined}
                         onCheckedChange={checked =>
-                          form.setValue('acceptTerms' as unknown, checked)
+                          form.setValue('acceptTerms' as any, checked)
                         }
                       />
                       <Label htmlFor='acceptTerms' className='text-sm leading-relaxed'>
@@ -625,9 +640,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <div className='flex items-start space-x-2'>
                         <Checkbox
                           id='acceptRefund'
-                          checked={form.watch('acceptRefundPolicy' as unknown)}
+                          checked={form.watch('acceptRefundPolicy' as any) as boolean | undefined}
                           onCheckedChange={checked =>
-                            form.setValue('acceptRefundPolicy' as unknown, checked)
+                            form.setValue('acceptRefundPolicy' as any, checked)
                           }
                         />
                         <Label htmlFor='acceptRefund' className='text-sm leading-relaxed'>
@@ -651,15 +666,16 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <DialogFooter>
                 <FormActions
                   isSubmitting={isProcessing}
+                  isDisabled={requiresStripeConnect && !hasStripeConnect}
                   submitLabel={
                     isAllOrNothing
                       ? `Pledge $${amount.toFixed(2)}`
-                      : `Pay $${form.watch('total' as unknown)?.toFixed(2) || amount.toFixed(2)}`
+                      : `Pay $${total?.toFixed(2) || amount.toFixed(2)}`
                   }
                   submitIcon={<CreditCard className='h-4 w-4' />}
+                  showCancel={true}
                   onCancel={() => onOpenChange(false)}
                   cancelLabel='Cancel'
-                  disabled={requiresStripeConnect && !hasStripeConnect}
                 />
               </DialogFooter>
             </form>

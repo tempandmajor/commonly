@@ -356,3 +356,5 @@ export const TourDatesDisplay: React.FC<TourDatesDisplayProps> = ({
     </div>
   );
 };
+
+export default TourDatesDisplay;

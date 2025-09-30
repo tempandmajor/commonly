@@ -9,7 +9,7 @@ import { AlertCircle, Clock, Users, Trophy } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { SEO } from '@/components/common/SEO';
 import { Badge } from '@/components/ui/badge';
-import type { Event as DetailedEvent } from '@/lib/types/event';
+import type { Event as DetailedEvent, EventStatus } from '@/lib/types/event';
 
 // Lazy load heavy components for better performance
 const EventDetailsSection = lazy(() => import('@/components/events/EventDetailsSection'));
@@ -76,11 +76,11 @@ const EventDetails: React.FC = () => {
   const { user } = useAuth();
 
   // Convert user to the format expected by EventDetailsSection
-  const currentUser = user
+  const currentUser: { id: string | undefined; name: string; avatar?: string | undefined } | null = user
     ? {
-        id: user.id,
-        name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-          ...(user.user_metadata && { avatar: user.user_metadata.avatar_url }),
+        id: user.id as string | undefined,
+        name: (user.user_metadata?.full_name || user.email?.split('@')[0] || 'User') as string,
+        avatar: user.user_metadata?.avatar_url as string | undefined,
       }
     : null;
 
@@ -171,7 +171,7 @@ const EventDetails: React.FC = () => {
     return (
       <>
         <div className='container mx-auto px-4 py-8'>
-          <Alert variant='destructive'>
+          <Alert>
             <AlertCircle className='h-4 w-4' />
             <AlertDescription>
               {error ||
@@ -201,80 +201,77 @@ const EventDetails: React.FC = () => {
     title: event.title,
     description: event.description || '',
     shortDescription: eventAny.short_description || event.description?.substring(0, 200) || '',
-    startDate: event.start_date || new Date().toISOString(),
-    endDate: event.end_date || new Date().toISOString(),
+    startDate: eventAny.start_date || new Date().toISOString(),
+    endDate: eventAny.end_date || new Date().toISOString(),
     location: event.location || 'Location TBD',
-    status: (event.status as unknown) || 'active',
+    status: (event.status || 'active') as EventStatus,
     category: eventAny.category,
     type: eventAny.type,
     enhancedType: eventAny.enhanced_type,
     organizer: {
-      id: event.creator_id || '',
+      id: eventAny.creator_id || '',
       name: eventAny.organizer_name || 'Event Organizer',
     },
-    organizerId: event.creator_id,
+    organizerId: eventAny.creator_id,
     bannerImage: event.image_url || eventAny.banner_image,
     capacity: eventAny.max_capacity || eventAny.capacity,
     attendeeCount: eventAny.attendees_count || 0,
-    isFree: event.is_free || (!event.price && !eventAny.targetAmount),
-    price: event.price || 0,
+    isFree: eventAny.is_free || (!eventAny.price && !eventAny.targetAmount),
+    price: eventAny.price || 0,
     currentAmount: eventAny.currentAmount || eventAny.current_amount || 0,
     targetAmount: eventAny.targetAmount || eventAny.target_amount || 0,
     isAllOrNothing: eventAny.isAllOrNothing || eventAny.is_all_or_nothing || false,
 
     // Campaign and deadline info
-    campaignDeadline: event.campaignDeadline || event.campaign_deadline,
-    pledgeDeadline: event.pledgeDeadline || event.pledge_deadline,
-    campaignDuration: event.campaign_duration,
-    isDeadlinePassed,
-    goalReached,
+    campaignDeadline: eventAny.campaignDeadline || eventAny.campaign_deadline,
+    pledgeDeadline: eventAny.pledgeDeadline || eventAny.pledge_deadline,
+    campaignDuration: eventAny.campaign_duration,
+    isDeadlinePassed: isDeadlinePassed || false,
+    goalReached: goalReached || false,
     daysRemaining,
 
     // Sponsorship
-    sponsorshipEnabled: event.sponsorship_enabled || false,
-    sponsorshipTiers: event.sponsorshipTiers || event.sponsorship_tiers || [],
+    sponsorshipEnabled: eventAny.sponsorship_enabled || false,
+    sponsorshipTiers: eventAny.sponsorshipTiers || eventAny.sponsorship_tiers || [],
 
     // Referral system
-    referral_enabled: event.referral_enabled || false,
-    referral_commission_amount: event.referral_commission_amount || 0,
-    referral_commission_type: event.referral_commission_type || 'fixed',
-    referral_terms: event.referral_terms,
+    referral_enabled: eventAny.referral_enabled || false,
+    referral_commission_amount: eventAny.referral_commission_amount || 0,
+    referral_commission_type: eventAny.referral_commission_type || 'fixed',
+    referral_terms: eventAny.referral_terms,
 
     // Tour details
-    tourDetails: event.tour_details,
-    tourDates: event.tour_dates || [],
+    tourDetails: eventAny.tour_details as any,
+    tourDates: eventAny.tour_dates || [],
 
     // Virtual event details
-    virtualEventDetails: event.virtual_event_details,
+    virtualEventDetails: eventAny.virtual_event_details,
 
     // Other fields
-    images: event.images || [],
-    tags: event.tags || [],
-    isPrivate: event.is_private || event.is_public === false,
-    requiresApproval: event.requires_approval || false,
-    ageRestriction: event.age_restriction,
-    createdAt: event.created_at,
-    updatedAt: event.updated_at,
-    maxTicketsPerPurchase: event.max_tickets_per_purchase || 4,
-    availableTickets: event.available_tickets || event.max_capacity,
-    reservedTickets: event.reserved_tickets || 0,
-    ticketsSold: event.tickets_sold || 0,
-    pledges: event.pledges || 0,
-    totalPledged: event.currentAmount || event.current_amount || 0,
-    fundingGoal: event.targetAmount || event.target_amount || 0,
+    images: eventAny.images || [],
+    tags: eventAny.tags || [],
+    isPrivate: eventAny.is_private || eventAny.is_public === false,
+    requiresApproval: eventAny.requires_approval || false,
+    ageRestriction: eventAny.age_restriction,
+    createdAt: eventAny.created_at,
+    updatedAt: eventAny.updated_at,
+    maxTicketsPerPurchase: eventAny.max_tickets_per_purchase || 4,
+    availableTickets: eventAny.available_tickets || eventAny.max_capacity,
+    reservedTickets: eventAny.reserved_tickets || 0,
+    ticketsSold: eventAny.tickets_sold || 0,
+    pledges: eventAny.pledges || 0,
+    totalPledged: eventAny.currentAmount || eventAny.current_amount || 0,
+    fundingGoal: eventAny.targetAmount || eventAny.target_amount || 0,
     fundingStatus: goalReached ? 'funded' : isDeadlinePassed ? 'failed' : 'in_progress',
 
     // Ticket settings
-    ticketSettings: event.ticket_settings || {
+    ticketSettings: eventAny.ticket_settings || {
       earlyBirdEnabled: false,
       groupDiscountEnabled: false,
       refundPolicy: 'partial',
       refundDeadlineDays: 7,
     },
   };
-
-  const pageTitle = `${formattedEvent.title} - Event Details`;
-  const pageDescription = formattedEvent.shortDescription || 'Join us for this amazing event';
 
   return (
     <>
@@ -338,12 +335,12 @@ const EventDetails: React.FC = () => {
           {/* Event Type and Category Badges */}
           <div className='flex flex-wrap gap-2 mb-6'>
             {formattedEvent.category && (
-              <Badge variant='secondary'>{formattedEvent.category}</Badge>
+              <Badge variant='secondary'>{String(formattedEvent.category)}</Badge>
             )}
             {formattedEvent.enhancedType && (
-              <Badge variant='outline'>{formattedEvent.enhancedType}</Badge>
+              <Badge variant='outline'>{String(formattedEvent.enhancedType)}</Badge>
             )}
-            {formattedEvent.type === 'tour' && (
+            {formattedEvent.type === 'Tour' && (
               <Badge variant='secondary'>
                 <Users className='h-3 w-3 mr-1' />
                 Tour Event
@@ -361,9 +358,10 @@ const EventDetails: React.FC = () => {
           </div>
 
           {/* Tour Dates Display */}
-          {formattedEvent.type === 'tour' &&
-            formattedEvent.tourDates &&
-            formattedEvent.tourDates.length > 0 && (
+          {formattedEvent.type === 'Tour' &&
+            formattedEvent.tourDetails &&
+            (formattedEvent.tourDetails as any)?.tourDates &&
+            (formattedEvent.tourDetails as any)?.tourDates.length > 0 && (
               <div className='mb-8'>
                 <Suspense
                   fallback={
@@ -380,8 +378,7 @@ const EventDetails: React.FC = () => {
                   }
                 >
                   <TourDatesDisplay
-                    tourDates={formattedEvent.tourDates}
-                    eventTitle={formattedEvent.title}
+                    tourDetails={formattedEvent.tourDetails as any}
                   />
                 </Suspense>
               </div>
@@ -389,7 +386,10 @@ const EventDetails: React.FC = () => {
 
           {/* Main Event Details */}
           <Suspense fallback={<EventDetailsSkeleton />}>
-            <EventDetailsSection event={formattedEvent} currentUser={currentUser} />
+            <EventDetailsSection
+              event={formattedEvent}
+              {...(currentUser && { currentUser })}
+            />
           </Suspense>
 
           {/* Sponsorship Section */}

@@ -25,9 +25,9 @@ export enum CollaboratorStatus {
 // Sponsorship tier schema
 export const sponsorshipTierSchema = z.object({
   id: z.string(),
-  name: commonValidations.requiredString('Tier name', 2, 50) as string,
+  name: commonValidations.requiredString('Tier name', 2, 50),
   price: commonValidations.price,
-  description: commonValidations.optionalString(200) as string,
+  description: commonValidations.optionalString(200),
   benefits: z
     .array(commonValidations.requiredString('Benefit', 5, 100))
     .min(1, 'Add at least one benefit')
@@ -65,7 +65,7 @@ const referralSettingsSchema = z
     enabled: commonValidations.booleanWithDefault(false),
     commissionType: z.enum(['fixed', 'percentage']).default('fixed'),
     commissionAmount: z.number().min(0, 'Commission amount must be positive').optional(),
-    terms: commonValidations.optionalString(500) as string,
+    terms: commonValidations.optionalString(500),
     maxReferrers: z.number().int().positive().optional(),
     requiresApproval: commonValidations.booleanWithDefault(false),
     stripeConnectRequired: commonValidations.booleanWithDefault(true),
@@ -155,10 +155,10 @@ const streamConfigurationSchema = z.object({
 
 // Virtual event details schema
 const virtualEventDetailsSchema = z.object({
-  platform: commonValidations.requiredString('Platform', 2, 50) as string,
+  platform: commonValidations.requiredString('Platform', 2, 50),
   url: commonValidations.url.optional(),
-  hostInstructions: commonValidations.optionalString(1000) as string,
-  attendeeInstructions: commonValidations.optionalString(1000) as string,
+  hostInstructions: commonValidations.optionalString(1000),
+  attendeeInstructions: commonValidations.optionalString(1000),
   streamSchedule: streamScheduleSchema.optional(),
   streamConfiguration: streamConfigurationSchema.optional(),
   streamStatus: z.nativeEnum(StreamStatus).optional(),
@@ -168,7 +168,7 @@ const virtualEventDetailsSchema = z.object({
 const collaboratorSchema = z.object({
   id: z.string(),
   email: commonValidations.email,
-  name: commonValidations.optionalString(50) as string,
+  name: commonValidations.optionalString(50),
   role: z.nativeEnum(CollaboratorRole).default(CollaboratorRole.CoOrganizer),
   status: z.nativeEnum(CollaboratorStatus).default(CollaboratorStatus.Pending),
   isExistingUser: commonValidations.booleanWithDefault(false),
@@ -212,11 +212,11 @@ const tourDateSchema = z
       .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'End time must be in HH:MM format')
       .optional(),
     venue: z.object({
-      name: commonValidations.requiredString('Venue name', 2, 100) as string,
-      address: commonValidations.requiredString('Venue address', 5, 200) as string,
-      city: commonValidations.requiredString('City', 2, 50) as string,
-      state: commonValidations.requiredString('State', 2, 50) as string,
-      country: commonValidations.requiredString('Country', 2, 50) as string,
+      name: commonValidations.requiredString('Venue name', 2, 100),
+      address: commonValidations.requiredString('Venue address', 5, 200),
+      city: commonValidations.requiredString('City', 2, 50),
+      state: commonValidations.requiredString('State', 2, 50),
+      country: commonValidations.requiredString('Country', 2, 50),
       venueId: z.string().optional(),
     }),
     ticketPrice: z.number().min(0, 'Ticket price cannot be negative').optional(),
@@ -233,6 +233,9 @@ const tourDateSchema = z
       if (data.endTime) {
         const [startHour, startMin] = data.startTime.split(':').map(Number);
         const [endHour, endMin] = data.endTime.split(':').map(Number);
+        if (startHour === undefined || startMin === undefined || endHour === undefined || endMin === undefined) {
+          return false;
+        }
         const startMinutes = startHour * 60 + startMin;
         const endMinutes = endHour * 60 + endMin;
         return endMinutes > startMinutes;
@@ -248,7 +251,7 @@ const tourDateSchema = z
 // Tour details schema
 const tourDetailsSchema = z
   .object({
-    tourName: commonValidations.requiredString('Tour name', 3, 100) as string,
+    tourName: commonValidations.requiredString('Tour name', 3, 100),
     tourDescription: z
       .string()
       .max(1000, 'Tour description cannot exceed 1000 characters')
@@ -262,7 +265,7 @@ const tourDetailsSchema = z
     }),
     tourManager: z
       .object({
-        name: commonValidations.requiredString('Tour manager name', 2, 50) as string,
+        name: commonValidations.requiredString('Tour manager name', 2, 50),
         email: z.string().email('Invalid email address'),
         phone: z.string().optional(),
       })
@@ -277,7 +280,9 @@ const tourDetailsSchema = z
       // Tour dates should be in chronological order
       const dates = data.tourDates.map(td => new Date(td.date));
       for (let i = 1; i < dates.length; i++) {
-        if (dates[i] < dates[i - 1]) {
+        const currentDate = dates[i];
+        const previousDate = dates[i - 1];
+        if (currentDate && previousDate && currentDate < previousDate) {
           return false;
         }
       }
@@ -293,9 +298,9 @@ const tourDetailsSchema = z
 export const eventFormSchema = z
   .object({
     // Basic Information
-    title: commonValidations.requiredString('Title', 3, 100) as string,
-    shortDescription: commonValidations.requiredString('Short description', 10, 200) as string,
-    description: commonValidations.requiredString('Description', 20, 5000) as string,
+    title: commonValidations.requiredString('Title', 3, 100),
+    shortDescription: commonValidations.requiredString('Short description', 10, 200),
+    description: commonValidations.requiredString('Description', 20, 5000),
     tags: z
       .array(z.string().min(1).max(30))
       .min(1, 'Add at least one tag')
@@ -313,7 +318,7 @@ export const eventFormSchema = z
     }),
 
     // Location & Virtual Settings
-    location: commonValidations.requiredString('Location', 3, 200) as string,
+    location: commonValidations.requiredString('Location', 3, 200),
     venueId: z.string().optional(),
     virtualEventDetails: virtualEventDetailsSchema.optional(),
 
@@ -377,8 +382,8 @@ export const eventFormSchema = z
     collaborators: z.array(collaboratorSchema).default([]),
 
     // SEO
-    seoTitle: commonValidations.optionalString(70) as string,
-    seoDescription: commonValidations.optionalString(160) as string,
+    seoTitle: commonValidations.optionalString(70),
+    seoDescription: commonValidations.optionalString(160),
     slug: z
       .string()
       .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens')
@@ -460,10 +465,9 @@ export const eventFormSchema = z
         data.tourDetails &&
         data.tourDetails.tourDates.length > 0
       ) {
-        const firstTourDate = data.tourDetails.tourDates[0];
-        const expectedLocation = `${firstTourDate.venue.city}, ${firstTourDate.venue.state}`;
         // Allow flexibility in location format
-        return true; // We'll handle this in the UI
+        // We'll handle this validation in the UI
+        return true;
       }
       return true;
     },

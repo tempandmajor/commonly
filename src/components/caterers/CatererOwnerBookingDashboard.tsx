@@ -92,24 +92,22 @@ const CatererOwnerBookingDashboard: React.FC<CatererOwnerBookingDashboardProps> 
     try {
       setLoading(true);
 
-      const { data: bookingsData, error } = await safeSupabaseQuery(
-        supabase
-          .from('caterer_bookings')
-          .select(
-            `
-            *,
-            users!user_id (
-              name,
-              email,
-              avatar_url
-            )
+      const query = supabase
+        .from('caterer_bookings')
+        .select(
           `
+          *,
+          users!user_id (
+            name,
+            email,
+            avatar_url
           )
-          .eq('caterer_id', catererId)
-          .order('created_at', { ascending: false })
-          .then(result => result),
-        []
-      );
+        `
+        )
+        .eq('caterer_id', catererId)
+        .order('created_at', { ascending: false });
+
+      const { data: bookingsData, error } = await safeSupabaseQuery(query, []);
 
       if (error) {
         console.error('Error fetching bookings:', error);
@@ -162,10 +160,12 @@ const CatererOwnerBookingDashboard: React.FC<CatererOwnerBookingDashboardProps> 
 
   const updateBookingStatus = async (bookingId: string, status: string) => {
     try {
-      const { error } = await safeSupabaseQuery(
-        supabase.from('caterer_bookings').update({ booking_status: status }).eq('id', bookingId).then(result => result),
-        null
-      );
+      const query = supabase
+        .from('caterer_bookings')
+        .update({ booking_status: status })
+        .eq('id', bookingId);
+
+      const { error } = await safeSupabaseQuery(query, null);
 
       if (error) {
         toast.error('Failed to update booking status');
@@ -439,7 +439,7 @@ const CatererOwnerBookingDashboard: React.FC<CatererOwnerBookingDashboardProps> 
               <Textarea
                 id='response'
                 value={response}
-                onChange={e => setResponse((e.target as HTMLInputElement).value)}
+                onChange={e => setResponse(e.target.value)}
                 placeholder='Type your message to the customer...'
                 rows={4}
               />

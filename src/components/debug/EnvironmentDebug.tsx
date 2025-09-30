@@ -16,10 +16,8 @@ export const EnvironmentDebug: React.FC<EnvironmentDebugProps> = ({ show = false
     return (
       <div className='fixed bottom-4 right-4 z-50'>
         <Button
-          variant='outline'
-          size='sm'
           onClick={() => setIsVisible(true)}
-          className='bg-white/80 backdrop-blur-sm'
+          className='bg-white/80 backdrop-blur-sm border h-7 px-2 text-xs'
         >
           Debug Env
         </Button>
@@ -28,13 +26,13 @@ export const EnvironmentDebug: React.FC<EnvironmentDebugProps> = ({ show = false
   }
 
   const envVars = {
-    VITE_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    VITE_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
-    VITE_SUPABASE_PROJECT_ID: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID as string,
-    VITE_APP_URL: process.env.NEXT_PUBLIC_APP_URL as string,
-    VITE_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string,
-    NODE_ENV: import.meta.env.NODE_ENV,
-    MODE: process.env.NODE_ENV as string,
+    VITE_SUPABASE_URL: (import.meta as any).env?.VITE_SUPABASE_URL as string,
+    VITE_SUPABASE_ANON_KEY: (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string,
+    VITE_SUPABASE_PROJECT_ID: (import.meta as any).env?.VITE_SUPABASE_PROJECT_ID as string,
+    VITE_APP_URL: (import.meta as any).env?.VITE_APP_URL as string,
+    VITE_STRIPE_PUBLISHABLE_KEY: (import.meta as any).env?.VITE_STRIPE_PUBLISHABLE_KEY as string,
+    NODE_ENV: (import.meta as any).env?.MODE as string,
+    MODE: (import.meta as any).env?.MODE as string,
   };
 
   const criticalVars = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'];
@@ -47,9 +45,9 @@ export const EnvironmentDebug: React.FC<EnvironmentDebugProps> = ({ show = false
   };
 
   const getStatusBadge = (value: string | undefined) => {
-    if (!value) return <Badge variant='destructive'>Missing</Badge>;
-    if (value.length < 10) return <Badge variant='secondary'>Invalid</Badge>;
-    return <Badge variant='default'>OK</Badge>;
+    if (!value) return <Badge className='bg-red-600 text-white'>Missing</Badge>;
+    if (value.length < 10) return <Badge className='bg-gray-300 text-gray-800'>Invalid</Badge>;
+    return <Badge className='bg-green-600 text-white'>OK</Badge>;
   };
 
   return (
@@ -62,14 +60,14 @@ export const EnvironmentDebug: React.FC<EnvironmentDebugProps> = ({ show = false
                 <Info className='h-5 w-5' />
                 Environment Debug
               </CardTitle>
-              <Button variant='outline' size='sm' onClick={() => setIsVisible(false)}>
+              <Button onClick={() => setIsVisible(false)} className='border h-7 px-2 text-xs'>
                 Close
               </Button>
             </div>
           </CardHeader>
           <CardContent className='space-y-4'>
             {missingCritical.length > 0 && (
-              <Alert variant='destructive'>
+              <Alert className='border-red-200 bg-red-50'>
                 <XCircle className='h-4 w-4' />
                 <AlertDescription>
                   <strong>Critical Error:</strong> Missing required environment variables:{' '}
@@ -110,22 +108,20 @@ export const EnvironmentDebug: React.FC<EnvironmentDebugProps> = ({ show = false
               <h4 className='font-medium mb-2'>Quick Actions:</h4>
               <div className='flex gap-2'>
                 <Button
-                  variant='outline'
-                  size='sm'
                   onClick={() => {
                     // Environment debugging information logged internally
                   }}
+                  className='border h-7 px-2 text-xs'
                 >
                   Log to Console
                 </Button>
                 <Button
-                  variant='outline'
-                  size='sm'
                   onClick={() => {
                     localStorage.clear();
                     sessionStorage.clear();
                     window.location.reload();
                   }}
+                  className='border h-7 px-2 text-xs'
                 >
                   Clear Storage & Reload
                 </Button>

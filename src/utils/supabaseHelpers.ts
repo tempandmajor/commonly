@@ -36,11 +36,12 @@ export function createEmptyState<T>(defaultValue: T): T {
 }
 
 export async function safeSupabaseQuery<T>(
-  queryPromise: Promise<any>,
+  queryOrPromise: Promise<any> | { then: (fn: any) => any },
   defaultValue: T
 ): Promise<{ data: T; error: string | null }> {
   try {
-    const response = await queryPromise;
+    // Handle both Promises and PromiseLike query builders
+    const response = await queryOrPromise;
     const { data, error } = handleSupabaseResponse<T>(response);
 
     if (error) {

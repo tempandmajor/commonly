@@ -33,20 +33,18 @@ import {
   Gift,
   Eye,
   EyeOff,
-  Search,
-  Check,
-  X,
   Users,
   Plus,
   Lock,
+  Check,
 } from 'lucide-react';
 import {
   FormField,
   FormSection,
   FormActions,
-  SearchSelect,
   DatePicker,
 } from '@/components/forms/shared';
+import { SearchSelect } from '@/components/forms/shared/SearchSelect';
 import {
   creditTransferSchema,
   fundsTransferSchema,
@@ -60,7 +58,6 @@ import {
   fundsTransferDefaults,
   calculateTransferFee,
   validateRecipient,
-  transferTypes,
   transferMethods,
 } from '@/lib/validations/transferValidation';
 import { useKeyboardShortcuts, createCancelShortcut } from '@/hooks/useKeyboardShortcuts';
@@ -70,22 +67,24 @@ import { usePromotionCredits } from '@/hooks/usePromotionCredits';
 interface TransferModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultType?: 'credits' | undefined| 'funds' | 'both';
+  defaultType?: 'credits' | 'funds' | 'both' | undefined;
   defaultRecipient?: {
-    method: string | undefined;
+    method?: string | undefined;
     identifier: string;
     displayName?: string | undefined;
-  };
-  maxAmount?: number;
-  onSuccess?: (transferId: string) => void;
+  } | undefined;
+  maxAmount?: number | undefined;
+  onSuccess?: ((transferId: string) => void) | undefined;
 }
+
+type TransferFormValues = Partial<CreditTransferFormValues> | Partial<FundsTransferFormValues> | Partial<CombinedTransferFormValues> | Partial<BulkTransferFormValues>;
 
 const TransferModal: React.FC<TransferModalProps> = ({
   open,
   onOpenChange,
   defaultType = 'funds',
   defaultRecipient,
-  maxAmount,
+  maxAmount: _maxAmount,
   onSuccess,
 }) => {
   const [transferType, setTransferType] = useState<'credits' | 'funds' | 'both' | 'bulk'>(
@@ -93,14 +92,14 @@ const TransferModal: React.FC<TransferModalProps> = ({
   );
   const [recipientValidated, setRecipientValidated] = useState(false);
   const [recipientInfo, setRecipientInfo] = useState<{
-    userId?: string;
-    displayName?: string;
-    avatar?: string;
+    userId?: string | undefined;
+    displayName?: string | undefined;
+    avatar?: string | undefined;
   }>({});
   const [showPin, setShowPin] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { walletBalance } = useWallet();
+  const wallet = useWallet();
   const { creditSummary } = usePromotionCredits();
 
   // Keyboard shortcuts
@@ -120,45 +119,46 @@ const TransferModal: React.FC<TransferModalProps> = ({
     }
   };
 
-  const getFormDefaults = () => {
-    const base = transferType === 'credits' ? creditTransferDefaults : fundsTransferDefaults;
+  const getFormDefaults = (): TransferFormValues => {
+    const base = transferType === 'credits' ? { ...creditTransferDefaults } : { ...fundsTransferDefaults };
 
     if (defaultRecipient) {
+      const method = defaultRecipient.method ?? base.recipientMethod;
       return {
-          ...base,
-        recipientMethod: defaultRecipient.method,
+        ...base,
+        recipientMethod: method as 'email' | 'username' | 'userId' | 'qrCode' | undefined,
         recipientIdentifier: defaultRecipient.identifier,
-      };
+      } as TransferFormValues;
     }
 
-    return base;
+    return base as TransferFormValues;
   };
 
-  const form = useForm({
-    resolver: zodResolver(getFormSchema()),
+  const form = useForm<TransferFormValues>({
+    resolver: zodResolver(getFormSchema()) as any,
     defaultValues: getFormDefaults(),
   });
 
   // Watch for fee calculation
-  const amount = form.watch('amount');
-  const transferSpeed = form.watch('transferSpeed' as unknown);
-  const includeFees = form.watch('includeFees' as unknown);
+  const amount = form.watch('amount' as any) as number | undefined;
+  const transferSpeed = form.watch('transferSpeed' as any) as 'instant' | 'standard' | 'scheduled' | undefined;
+  const includeFees = form.watch('includeFees' as any) as boolean | undefined;
 
   // Calculate fees
   useEffect(() => {
     if (transferType === 'funds' || transferType === 'both') {
       const fee = calculateTransferFee(amount || 0, transferSpeed || 'instant');
-      form.setValue('feeAmount' as unknown, fee);
+      form.setValue('feeAmount' as any, fee);
 
       const total = includeFees ? (amount || 0) + fee : amount || 0;
-      form.setValue('totalAmount' as unknown, total);
+      form.setValue('totalAmount' as any, total);
     }
   }, [amount, transferSpeed, includeFees, transferType]);
 
   // Validate recipient
   const handleRecipientBlur = async () => {
-    const method = form.getValues('recipientMethod' as unknown);
-    const identifier = form.getValues('recipientIdentifier' as unknown);
+    const method = form.getValues('recipientMethod' as any) as string | undefined;
+    const identifier = form.getValues('recipientIdentifier' as any) as string | undefined;
 
     if (method && identifier) {
       const result = await validateRecipient(method, identifier);
@@ -166,27 +166,27 @@ const TransferModal: React.FC<TransferModalProps> = ({
       if (result.isValid) {
         setRecipientValidated(true);
         setRecipientInfo({
-          userId: result.userId,
-          displayName: result.displayName,
+          userId: result.userId ?? undefined,
+          displayName: result.displayName ?? undefined,
           avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${result.userId}`,
         });
       } else {
         setRecipientValidated(false);
-        form.setError('recipientIdentifier' as unknown, {
+        form.setError('recipientIdentifier' as any, {
           type: 'manual',
-          message: result.error,
+          message: result.error ?? 'Invalid recipient',
         });
       }
     }
   };
 
-  const handleSubmit = async (values: unknown) => {
+  const handleSubmit = async (values: TransferFormValues) => {
     try {
       setIsProcessing(true);
 
       // Check if PIN is required
-      const requiresPin = amount > 100; // Example threshold
-      if (requiresPin && !values.pin) {
+      const requiresPin = (amount ?? 0) > 100; // Example threshold
+      if (requiresPin && !(values as any).pin) {
         setShowPin(true);
         setIsProcessing(false);
         return;
@@ -200,7 +200,7 @@ const TransferModal: React.FC<TransferModalProps> = ({
       toast.success(
         `Transfer successful! ${
           transferType === 'credits' ? `${amount} credits sent` : `$${amount} sent`
-        } to ${recipientInfo.displayName || values.recipientIdentifier}`
+        } to ${recipientInfo.displayName || (values as any).recipientIdentifier}`
       );
 
       if (onSuccess) {
@@ -216,15 +216,6 @@ const TransferModal: React.FC<TransferModalProps> = ({
     }
   };
 
-  const getMaxAmount = () => {
-    if (maxAmount) return maxAmount;
-
-    if (transferType === 'credits') {
-      return creditSummary.totalCredits;
-    } else {
-      return walletBalance.available;
-    }
-  };
 
   const recipientMethodOptions = transferMethods.map(method => ({
     value: method,
@@ -236,6 +227,8 @@ const TransferModal: React.FC<TransferModalProps> = ({
           : method.charAt(0).toUpperCase() + method.slice(1),
   }));
 
+  const recipientMethod = form.watch('recipientMethod' as any) as string | undefined;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='sm:max-w-[600px] max-h-[90vh] overflow-y-auto'>
@@ -245,7 +238,7 @@ const TransferModal: React.FC<TransferModalProps> = ({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-6'>
+          <form onSubmit={form.handleSubmit(handleSubmit as any)} className='space-y-6'>
             {/* Transfer Type Selection */}
             <div className='space-y-3'>
               <Label>What would you like to send?</Label>
@@ -300,8 +293,8 @@ const TransferModal: React.FC<TransferModalProps> = ({
                 <div className='flex justify-between items-center'>
                   <span>Available balance:</span>
                   <div className='flex gap-4'>
-                    <span className='font-medium'>${walletBalance.available.toFixed(2)} funds</span>
-                    <span className='font-medium'>{creditSummary.totalCredits} credits</span>
+                    <span className='font-medium'>${(wallet.balance / 100).toFixed(2)} funds</span>
+                    <span className='font-medium'>{creditSummary.available} credits</span>
                   </div>
                 </div>
               </AlertDescription>
@@ -312,50 +305,51 @@ const TransferModal: React.FC<TransferModalProps> = ({
                 {/* Recipient Selection */}
                 <FormSection title='Recipient' description='Who are you sending to?'>
                   <div className='space-y-4'>
-                    <SearchSelect
-                      form={form}
-                      name='recipientMethod'
-                      label='Send via'
-                      placeholder='Select method...'
-                      options={recipientMethodOptions}
-                      required
-                    />
+                    <div className='space-y-2'>
+                      <Label htmlFor='recipientMethod'>Send via</Label>
+                      <SearchSelect
+                        options={recipientMethodOptions}
+                        value={recipientMethod}
+                        onChange={(value) => form.setValue('recipientMethod' as any, value)}
+                        placeholder='Select method...'
+                      />
+                    </div>
 
                     <div className='space-y-2'>
                       <FormField
                         form={form}
                         name='recipientIdentifier'
                         label={
-                          form.watch('recipientMethod' as unknown) === 'email'
+                          recipientMethod === 'email'
                             ? 'Email Address'
-                            : form.watch('recipientMethod' as unknown) === 'username'
+                            : recipientMethod === 'username'
                               ? 'Username'
-                              : form.watch('recipientMethod' as unknown) === 'userId'
+                              : recipientMethod === 'userId'
                                 ? 'User ID'
                                 : 'Scan QR Code'
                         }
                         placeholder={
-                          form.watch('recipientMethod' as unknown) === 'email'
+                          recipientMethod === 'email'
                             ? 'user@example.com'
-                            : form.watch('recipientMethod' as unknown) === 'username'
+                            : recipientMethod === 'username'
                               ? '@username'
-                              : form.watch('recipientMethod' as unknown) === 'userId'
+                              : recipientMethod === 'userId'
                                 ? 'usr_123...'
                                 : 'Scan or enter code'
                         }
                         required
-                        onBlur={handleRecipientBlur}
                         icon={
-                          form.watch('recipientMethod' as unknown) === 'email' ? (
+                          recipientMethod === 'email' ? (
                             <Mail className='h-4 w-4' />
-                          ) : form.watch('recipientMethod' as unknown) === 'username' ? (
+                          ) : recipientMethod === 'username' ? (
                             <User className='h-4 w-4' />
-                          ) : form.watch('recipientMethod' as unknown) === 'userId' ? (
+                          ) : recipientMethod === 'userId' ? (
                             <Hash className='h-4 w-4' />
                           ) : (
                             <QrCode className='h-4 w-4' />
                           )
                         }
+                        onChange={handleRecipientBlur}
                       />
 
                       {recipientValidated && recipientInfo.displayName && (
@@ -388,8 +382,6 @@ const TransferModal: React.FC<TransferModalProps> = ({
                           label='Credits'
                           type='number'
                           placeholder='0'
-                          min={0}
-                          max={creditSummary.totalCredits}
                           icon={<CreditCard className='h-4 w-4' />}
                         />
                         <FormField
@@ -398,9 +390,6 @@ const TransferModal: React.FC<TransferModalProps> = ({
                           label='Funds'
                           type='number'
                           placeholder='0.00'
-                          min={0}
-                          max={walletBalance.available}
-                          step={0.01}
                           icon={<DollarSign className='h-4 w-4' />}
                         />
                       </>
@@ -412,9 +401,6 @@ const TransferModal: React.FC<TransferModalProps> = ({
                           label='Amount'
                           type='number'
                           placeholder={transferType === 'credits' ? '0' : '0.00'}
-                          min={0.01}
-                          max={getMaxAmount()}
-                          step={transferType === 'credits' ? 1 : 0.01}
                           required
                           icon={
                             transferType === 'credits' ? (
@@ -431,8 +417,6 @@ const TransferModal: React.FC<TransferModalProps> = ({
                           label='Confirm Amount'
                           type='number'
                           placeholder={transferType === 'credits' ? '0' : '0.00'}
-                          min={0.01}
-                          step={transferType === 'credits' ? 1 : 0.01}
                           required
                           description='Re-enter the amount to confirm'
                         />
@@ -450,8 +434,8 @@ const TransferModal: React.FC<TransferModalProps> = ({
                             variant='outline'
                             size='sm'
                             onClick={() => {
-                              form.setValue('amount', amt);
-                              form.setValue('confirmAmount', amt);
+                              form.setValue('amount' as any, amt);
+                              form.setValue('confirmAmount' as any, amt);
                             }}
                           >
                             ${amt}
@@ -469,8 +453,8 @@ const TransferModal: React.FC<TransferModalProps> = ({
                       <div className='space-y-3'>
                         <Label>Transfer Speed</Label>
                         <RadioGroup
-                          value={form.watch('transferSpeed' as unknown) || 'instant'}
-                          onValueChange={value => form.setValue('transferSpeed' as unknown, value)}
+                          value={transferSpeed || 'instant'}
+                          onValueChange={value => form.setValue('transferSpeed' as any, value)}
                         >
                           <div className='flex items-center space-x-3 p-3 border rounded-lg'>
                             <RadioGroupItem value='instant' id='instant' />
@@ -522,15 +506,16 @@ const TransferModal: React.FC<TransferModalProps> = ({
                         </RadioGroup>
                       </div>
 
-                      {form.watch('transferSpeed' as unknown) === 'scheduled' && (
-                        <DatePicker
-                          form={form}
-                          name='scheduledDate'
-                          label='Schedule Date'
-                          placeholder='Select date'
-                          minDate={new Date()}
-                          required
-                        />
+                      {transferSpeed === 'scheduled' && (
+                        <div className='space-y-2'>
+                          <Label htmlFor='scheduledDate'>Schedule Date *</Label>
+                          <DatePicker
+                            value={form.watch('scheduledDate' as any) as Date | undefined}
+                            onChange={(date) => form.setValue('scheduledDate' as any, date)}
+                            placeholder='Select date'
+                            minDate={new Date()}
+                          />
+                        </div>
                       )}
                     </div>
                   </FormSection>
@@ -549,7 +534,6 @@ const TransferModal: React.FC<TransferModalProps> = ({
                       label='Description'
                       type='textarea'
                       placeholder="What's this transfer for?"
-                      rows={2}
                     />
 
                     <FormField
@@ -577,7 +561,7 @@ const TransferModal: React.FC<TransferModalProps> = ({
                         type='switch'
                         description='Hide your identity from the recipient'
                         icon={
-                          form.watch('isAnonymous') ? (
+                          form.watch('isAnonymous' as any) ? (
                             <EyeOff className='h-4 w-4' />
                           ) : (
                             <Eye className='h-4 w-4' />
@@ -602,7 +586,7 @@ const TransferModal: React.FC<TransferModalProps> = ({
             )}
 
             {/* Summary */}
-            {transferType !== 'bulk' && amount > 0 && (
+            {transferType !== 'bulk' && amount && amount > 0 && (
               <FormSection title='Summary' description='Review your transfer'>
                 <div className='space-y-3 text-sm'>
                   <div className='flex justify-between'>
@@ -616,12 +600,12 @@ const TransferModal: React.FC<TransferModalProps> = ({
                     <>
                       <div className='flex justify-between'>
                         <span className='text-muted-foreground'>Transfer fee</span>
-                        <span>${form.watch('feeAmount' as unknown)?.toFixed(2) || '0.00'}</span>
+                        <span>${(form.watch('feeAmount' as any) as number | undefined)?.toFixed(2) || '0.00'}</span>
                       </div>
                       <Separator />
                       <div className='flex justify-between font-semibold'>
                         <span>Total to send</span>
-                        <span>${form.watch('totalAmount' as unknown)?.toFixed(2) || '0.00'}</span>
+                        <span>${(form.watch('totalAmount' as any) as number | undefined)?.toFixed(2) || '0.00'}</span>
                       </div>
                     </>
                   )}
@@ -630,16 +614,16 @@ const TransferModal: React.FC<TransferModalProps> = ({
                     <span className='text-muted-foreground'>To</span>
                     <span className='font-medium'>
                       {recipientInfo.displayName ||
-                        form.watch('recipientIdentifier' as unknown) ||
+                        (form.watch('recipientIdentifier' as any) as string | undefined) ||
                         'Not specified'}
                     </span>
                   </div>
 
-                  {form.watch('transferSpeed' as unknown) === 'scheduled' && (
+                  {transferSpeed === 'scheduled' && (
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Scheduled for</span>
                       <span>
-                        {form.watch('scheduledDate' as unknown)?.toLocaleDateString() || 'Not set'}
+                        {(form.watch('scheduledDate' as any) as Date | undefined)?.toLocaleDateString() || 'Not set'}
                       </span>
                     </div>
                   )}
@@ -660,7 +644,6 @@ const TransferModal: React.FC<TransferModalProps> = ({
                       label='Enter PIN'
                       type='password'
                       placeholder='••••'
-                      maxLength={4}
                       required
                     />
                   </div>
@@ -671,17 +654,18 @@ const TransferModal: React.FC<TransferModalProps> = ({
             <DialogFooter>
               <FormActions
                 isSubmitting={isProcessing}
+                isDisabled={!recipientValidated && transferType !== 'bulk'}
                 submitLabel={
                   transferType === 'bulk'
                     ? 'Send to Multiple'
                     : transferType === 'credits'
                       ? `Send ${amount || 0} Credits`
-                      : `Send $${form.watch('totalAmount' as unknown)?.toFixed(2) || '0.00'}`
+                      : `Send $${(form.watch('totalAmount' as any) as number | undefined)?.toFixed(2) || '0.00'}`
                 }
                 submitIcon={<Send className='h-4 w-4' />}
+                showCancel={true}
                 onCancel={() => onOpenChange(false)}
                 cancelLabel='Cancel'
-                disabled={!recipientValidated && transferType !== 'bulk'}
               />
             </DialogFooter>
           </form>

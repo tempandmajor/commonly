@@ -94,11 +94,11 @@ export const commonValidations = {
 
 // Complex validation schemas
 export const addressSchema = z.object({
-  street: commonValidations.requiredString('Street address') as string,
-  city: commonValidations.requiredString('City') as string,
-  state: commonValidations.requiredString('State/Province') as string,
-  postalCode: commonValidations.requiredString('Postal code') as string,
-  country: commonValidations.requiredString('Country') as string,
+  street: commonValidations.requiredString('Street address'),
+  city: commonValidations.requiredString('City'),
+  state: commonValidations.requiredString('State/Province'),
+  postalCode: commonValidations.requiredString('Postal code'),
+  country: commonValidations.requiredString('Country'),
 });
 
 export const socialLinksSchema = z.object({

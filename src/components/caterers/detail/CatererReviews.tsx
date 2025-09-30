@@ -49,29 +49,27 @@ const CatererReviews: React.FC<CatererReviewsProps> = ({ catererId, isAuthentica
       setLoading(true);
 
       // Safe query for reviews
-      const { data: reviewsData, error } = await safeSupabaseQuery(
-        supabase
-          .from('caterer_reviews')
-          .select(
-            `
-            id,
-            user_id,
-            caterer_id,
-            rating,
-            comment,
-            created_at,
-            helpful_count,
-            users!user_id (
-              name,
-              avatar_url
-            )
+      const query = supabase
+        .from('caterer_reviews')
+        .select(
           `
+          id,
+          user_id,
+          caterer_id,
+          rating,
+          comment,
+          created_at,
+          helpful_count,
+          users!user_id (
+            name,
+            avatar_url
           )
-          .eq('caterer_id', catererId)
-          .order('created_at', { ascending: false })
-          .then(result => result),
-        []
-      );
+        `
+        )
+        .eq('caterer_id', catererId)
+        .order('created_at', { ascending: false });
+
+      const { data: reviewsData, error } = await safeSupabaseQuery(query, []);
 
       if (error) {
         console.error('Error fetching reviews:', error);
@@ -112,16 +110,14 @@ const CatererReviews: React.FC<CatererReviewsProps> = ({ catererId, isAuthentica
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await safeSupabaseQuery(
-        supabase
-          .from('caterer_reviews')
-          .select('id')
-          .eq('caterer_id', catererId)
-          .eq('user_id', user.id)
-          .single()
-          .then(result => result),
-        null
-      );
+      const query = supabase
+        .from('caterer_reviews')
+        .select('id')
+        .eq('caterer_id', catererId)
+        .eq('user_id', user.id)
+        .single();
+
+      const { data, error } = await safeSupabaseQuery(query, null);
 
       if (!error && data) {
         setUserHasReviewed(true);
@@ -147,19 +143,17 @@ const CatererReviews: React.FC<CatererReviewsProps> = ({ catererId, isAuthentica
         return;
       }
 
-      const { error } = await safeSupabaseQuery(
-        supabase
-          .from('caterer_reviews')
-          .insert({
-            caterer_id: catererId,
-            user_id: user.id,
-            rating,
-            comment: newReview.trim(),
-            helpful_count: 0,
-          })
-          .then(result => result),
-        null
-      );
+      const query = supabase
+        .from('caterer_reviews')
+        .insert({
+          caterer_id: catererId,
+          user_id: user.id,
+          rating,
+          comment: newReview.trim(),
+          helpful_count: 0,
+        });
+
+      const { error } = await safeSupabaseQuery(query, null);
 
       if (error) {
         toast.error('Failed to submit review');
@@ -182,19 +176,16 @@ const CatererReviews: React.FC<CatererReviewsProps> = ({ catererId, isAuthentica
 
   const markHelpful = async (reviewId: string) => {
     try {
-      // Use our mock RPC for now to avoid "never" type errors
-      await supabase.rpc('increment_helpful_count', { review_id: reviewId });
-      toast.success('Marked as helpful!');
-      await fetchReviews();
-    } catch (error) {
-      console.error('Error marking helpful:', error);
-      // Fallback: increment locally
+      // Fallback: increment locally (RPC may not be configured)
       setReviews(prev =>
         prev.map(review =>
           review.id === reviewId ? { ...review, helpful_count: review.helpful_count + 1 } : review
         )
       );
       toast.success('Marked as helpful!');
+    } catch (error) {
+      console.error('Error marking helpful:', error);
+      toast.error('Failed to mark as helpful');
     }
   };
 

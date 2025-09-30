@@ -168,7 +168,7 @@ const CatererBookingCard = ({
           <CardDescription>
             {selectedMenuDetails
               ? `${selectedMenuDetails.name} - ${formatCurrency(selectedMenuDetails.price)}/person`
-              : `Starting at ${formatCurrency(Number(selectedMenuDetails?.price || 0) as number)}/person`}
+              : `Book this caterer`}
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
@@ -187,7 +187,7 @@ const CatererBookingCard = ({
             <label className='text-sm font-medium'>Event Time</label>
             <select
               value={selectedTime}
-              onChange={e => setSelectedTime((e.target as HTMLInputElement).value)}
+              onChange={e => setSelectedTime(e.target.value)}
               className='w-full p-2 border rounded-md text-sm'
             >
               <option value='11:00'>11:00 AM</option>
@@ -205,7 +205,7 @@ const CatererBookingCard = ({
             <Input
               type='number'
               value={guestCount}
-              onChange={e => onGuestCountChange(Number((e.target as HTMLInputElement) as number.value) as number)}
+              onChange={e => onGuestCountChange(Number(e.target.value))}
               min={caterer.capacity?.min}
               max={caterer.capacity?.max}
             />

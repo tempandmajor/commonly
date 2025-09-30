@@ -9,14 +9,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Calendar,
   Package,
-  Users,
   Megaphone,
-  Store,
-  ChefHat,
   MapPin,
-  Mic,
   Info,
-  Lock,
   ExternalLink,
   ArrowRight,
   Sparkles,
@@ -24,10 +19,8 @@ import {
   TrendingUp,
   Star,
   Award,
-  Zap,
   BarChart3,
   Globe,
-  CheckCircle,
   Lightbulb,
   Target,
   Rocket,
@@ -53,7 +46,7 @@ interface CreateOption {
   title: string;
   description: string;
   longDescription: string;
-  icon: React.ComponentType<{ className?: string } | undefined | undefined>;
+  icon: React.ComponentType<any>;
   href: string;
   status: 'available' | 'pro' | 'coming-soon';
   requiresStripe?: boolean;
@@ -79,12 +72,11 @@ const Create: React.FC = () => {
   const navigate = useNavigate();
   const { trackEvent } = useAnalytics('/create', 'Creator Hub');
   const { user } = useAuth();
-  const { hasStripeConnect, isLoading: isStripeLoading } = useStripeConnect();
+  const { hasStripeConnect } = useStripeConnect();
 
   const [creatorStats, setCreatorStats] = useState<CreatorStats | null>(null);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const loadCreatorData = useCallback(async () => {
     if (!user) return;
@@ -93,10 +85,9 @@ const Create: React.FC = () => {
       setIsLoading(true);
 
       // Fetch creator statistics
-      const [eventsResult, promotionsResult, profileResult] = await Promise.all([
+      const [eventsResult, promotionsResult] = await Promise.all([
         supabase.from('events').select('*').eq('creator_id', user.id),
         supabase.from('promotions').select('*').eq('user_id', user.id),
-        supabase.from('user_profiles').select('*').eq('user_id', user.id).single(),
       ]);
 
       const events = eventsResult.data || [];
@@ -104,9 +95,9 @@ const Create: React.FC = () => {
 
       // Calculate stats
       const totalEvents = events.length;
-      const successfulEvents = events.filter(e => e.status === 'completed').length;
-      const totalAttendees = events.reduce((sum, e) => sum + (e.attendees_count || 0), 0);
-      const totalRevenue = events.reduce((sum, e) => sum + (e.total_revenue || 0), 0);
+      const successfulEvents = events.filter((e: any) => e.status === 'completed').length;
+      const totalAttendees = events.reduce((sum: number, e: any) => sum + (e.attendees_count || 0), 0);
+      const totalRevenue = events.reduce((sum: number, e: any) => sum + (e.total_revenue || 0), 0);
 
       // Determine experience level
       let experienceLevel: CreatorStats['experienceLevel'] = 'new';
@@ -131,14 +122,9 @@ const Create: React.FC = () => {
         experienceLevel,
       });
 
-      // Check if this is a new user
-      if (totalEvents === 0 && promotions.length === 0) {
-        setShowOnboarding(true);
-      }
-
       // Fetch recent activity
       const recentActivities: RecentActivity[] = [
-          ...events.slice(0, 3).map(event => ({
+          ...events.slice(0, 3).map((event: any) => ({
           id: event.id,
           type: 'event' as const,
           title: event.title,
@@ -146,7 +132,7 @@ const Create: React.FC = () => {
           lastModified: event.updated_at,
           href: `/events/${event.id}/edit`,
         })),
-          ...promotions.slice(0, 2).map(promo => ({
+          ...promotions.slice(0, 2).map((promo: any) => ({
           id: promo.id,
           type: 'promotion' as const,
           title: promo.title,
@@ -179,21 +165,21 @@ const Create: React.FC = () => {
       });
     }
 
-  }, [trackEvent, user, hasStripeConnect, creatorStats.experienceLevel]);
+  }, [trackEvent, user, hasStripeConnect, creatorStats?.experienceLevel]);
 
-  const createOptions: CreateOption[] = useMemo(() => [
+  const createOptions = useMemo<CreateOption[]>(() => [
     {
       title: 'Create Event',
       description: 'Organize workshops, conferences, or social gatherings',
       longDescription: 'Create memorable experiences with our all-or-nothing funding model. Perfect for conferences, workshops, meetups, and special occasions.',
       icon: Calendar,
       href: '/create-event',
-      status: 'available',
+      status: 'available' as const,
       requiresStripe: true,
       popular: true,
       estimatedTime: '10-15 min',
-      difficulty: 'beginner',
-      category: 'primary',
+      difficulty: 'beginner' as const,
+      category: 'primary' as const,
       color: 'bg-gradient-to-br from-purple-500 to-purple-600',
       features: [
         'All-or-nothing funding',
@@ -208,10 +194,10 @@ const Create: React.FC = () => {
       longDescription: 'Increase visibility and engagement with smart promotional campaigns that reach your ideal audience.',
       icon: Megaphone,
       href: '/create-promotion',
-      status: 'available',
+      status: 'available' as const,
       estimatedTime: '5-10 min',
-      difficulty: 'intermediate',
-      category: 'primary',
+      difficulty: 'intermediate' as const,
+      category: 'primary' as const,
       color: 'bg-gradient-to-br from-blue-500 to-blue-600',
       features: [
         'Audience targeting',
@@ -226,10 +212,10 @@ const Create: React.FC = () => {
       longDescription: 'Monetize your expertise by selling products directly to your audience through our integrated marketplace.',
       icon: Package,
       href: '/create-product',
-      status: 'available',
+      status: 'available' as const,
       estimatedTime: '15-20 min',
-      difficulty: 'intermediate',
-      category: 'secondary',
+      difficulty: 'intermediate' as const,
+      category: 'secondary' as const,
       color: 'bg-gradient-to-br from-green-500 to-green-600',
       features: [
         'Digital & physical products',
@@ -244,10 +230,10 @@ const Create: React.FC = () => {
       longDescription: 'Access exclusive features, reduced fees, priority support, and special promotional opportunities.',
       icon: Star,
       href: '/creator-program',
-      status: 'available',
+      status: 'available' as const,
       estimatedTime: '3-5 min',
-      difficulty: 'beginner',
-      category: 'secondary',
+      difficulty: 'beginner' as const,
+      category: 'secondary' as const,
       color: 'bg-gradient-to-br from-amber-500 to-amber-600',
       features: [
         'Reduced platform fees',
@@ -262,10 +248,10 @@ const Create: React.FC = () => {
       longDescription: 'Get access to advanced analytics, custom branding, priority support, and enhanced promotional tools.',
       icon: Sparkles,
       href: '/pro',
-      status: 'pro',
+      status: 'pro' as const,
       estimatedTime: '2 min',
-      difficulty: 'advanced',
-      category: 'advanced',
+      difficulty: 'advanced' as const,
+      category: 'advanced' as const,
       color: 'bg-gradient-to-br from-indigo-500 to-indigo-600',
       features: [
         'Advanced analytics',
@@ -280,11 +266,11 @@ const Create: React.FC = () => {
       longDescription: 'Transform your space into a revenue stream by listing it for events, meetings, and gatherings.',
       icon: MapPin,
       href: '/list-venue',
-      status: 'available',
+      status: 'available' as const,
       requiresVerification: true,
       estimatedTime: '20-25 min',
-      difficulty: 'intermediate',
-      category: 'secondary',
+      difficulty: 'intermediate' as const,
+      category: 'secondary' as const,
       color: 'bg-gradient-to-br from-teal-500 to-teal-600',
       features: [
         'Space optimization',
@@ -330,7 +316,7 @@ const Create: React.FC = () => {
     });
 
     navigate(option.href);
-  }, [hasStripeConnect, navigate, trackEvent, creatorStats.experienceLevel]);
+  }, [hasStripeConnect, navigate, trackEvent, creatorStats?.experienceLevel]);
 
   if (isLoading) {
     return (
@@ -372,9 +358,9 @@ const Create: React.FC = () => {
               Creator Hub
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              {creatorStats.experienceLevel === 'new'
+              {creatorStats?.experienceLevel === 'new'
                 ? "Welcome! Let's create your first amazing event and start your creator journey."
-                : `Welcome back! Continue building your creator empire with ${creatorStats.totalEvents || 0} events created.`
+                : `Welcome back! Continue building your creator empire with ${creatorStats?.totalEvents || 0} events created.`
               }
             </p>
           </div>
@@ -386,19 +372,19 @@ const Create: React.FC = () => {
                 variant="secondary"
                 className={cn(
                   "px-4 py-2 text-sm font-medium",
-                  creatorStats.experienceLevel === 'advanced' && "bg-purple-100 text-purple-700 border-purple-200",
-                  creatorStats.experienceLevel === 'intermediate' && "bg-blue-100 text-blue-700 border-blue-200",
-                  creatorStats.experienceLevel === 'beginner' && "bg-green-100 text-green-700 border-green-200",
-                  creatorStats.experienceLevel === 'new' && "bg-yellow-100 text-yellow-700 border-yellow-200"
+                  creatorStats?.experienceLevel === 'advanced' && "bg-purple-100 text-purple-700 border-purple-200",
+                  creatorStats?.experienceLevel === 'intermediate' && "bg-blue-100 text-blue-700 border-blue-200",
+                  creatorStats?.experienceLevel === 'beginner' && "bg-green-100 text-green-700 border-green-200",
+                  creatorStats?.experienceLevel === 'new' && "bg-yellow-100 text-yellow-700 border-yellow-200"
                 )}
               >
-                {creatorStats.experienceLevel === 'new' && <Sparkles className="h-4 w-4 mr-2" />}
-                {creatorStats.experienceLevel === 'beginner' && <Lightbulb className="h-4 w-4 mr-2" />}
-                {creatorStats.experienceLevel === 'intermediate' && <TrendingUp className="h-4 w-4 mr-2" />}
-                {creatorStats.experienceLevel === 'advanced' && <Award className="h-4 w-4 mr-2" />}
-                {creatorStats.experienceLevel === 'new' ? 'New Creator' :
-                 creatorStats.experienceLevel === 'beginner' ? 'Rising Creator' :
-                 creatorStats.experienceLevel === 'intermediate' ? 'Experienced Creator' : 'Advanced Creator'}
+                {creatorStats?.experienceLevel === 'new' && <Sparkles className="h-4 w-4 mr-2" />}
+                {creatorStats?.experienceLevel === 'beginner' && <Lightbulb className="h-4 w-4 mr-2" />}
+                {creatorStats?.experienceLevel === 'intermediate' && <TrendingUp className="h-4 w-4 mr-2" />}
+                {creatorStats?.experienceLevel === 'advanced' && <Award className="h-4 w-4 mr-2" />}
+                {creatorStats?.experienceLevel === 'new' ? 'New Creator' :
+                 creatorStats?.experienceLevel === 'beginner' ? 'Rising Creator' :
+                 creatorStats?.experienceLevel === 'intermediate' ? 'Experienced Creator' : 'Advanced Creator'}
               </Badge>
 
               {!hasStripeConnect && (
@@ -429,7 +415,7 @@ const Create: React.FC = () => {
                 <Rocket className="h-6 w-6 text-primary" />
                 Quick Actions
               </h2>
-              {creatorStats.experienceLevel === 'new' && (
+              {creatorStats?.experienceLevel === 'new' && (
                 <Badge variant="outline" className="flex items-center gap-1">
                   <Target className="h-3 w-3" />
                   Getting Started
@@ -562,11 +548,11 @@ const Create: React.FC = () => {
                 <CardContent className="p-6 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">{creatorStats.totalEvents}</div>
+                      <div className="text-2xl font-bold text-primary">{creatorStats?.totalEvents ?? 0}</div>
                       <div className="text-xs text-muted-foreground">Events Created</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">{creatorStats.totalAttendees}</div>
+                      <div className="text-2xl font-bold text-green-600">{creatorStats?.totalAttendees ?? 0}</div>
                       <div className="text-xs text-muted-foreground">Total Attendees</div>
                     </div>
                   </div>
@@ -574,12 +560,12 @@ const Create: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Next Milestone</span>
-                      <span className="font-medium">{creatorStats.nextMilestone}</span>
+                      <span className="font-medium">{creatorStats?.nextMilestone ?? 'Loading...'}</span>
                     </div>
                     <Progress
-                      value={creatorStats.experienceLevel === 'new' ? 10 :
-                             creatorStats.experienceLevel === 'beginner' ? 35 :
-                             creatorStats.experienceLevel === 'intermediate' ? 70 : 90}
+                      value={creatorStats?.experienceLevel === 'new' ? 10 :
+                             creatorStats?.experienceLevel === 'beginner' ? 35 :
+                             creatorStats?.experienceLevel === 'intermediate' ? 70 : 90}
                       className="h-2"
                     />
                   </div>
@@ -642,7 +628,7 @@ const Create: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-blue-600 leading-relaxed">
-                  {creatorStats.experienceLevel === 'new'
+                  {creatorStats?.experienceLevel === 'new'
                     ? "Start with a small workshop or meetup to get familiar with the platform before hosting larger events."
                     : "Consider joining our Creator Program to unlock reduced fees and exclusive features."
                   }
