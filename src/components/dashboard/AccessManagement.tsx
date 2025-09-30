@@ -192,7 +192,7 @@ export function AccessManagement({ onUserRoleChange }: AccessManagementProps) {
 
                 <select
                   value={user.role}
-                  onChange={e => handleRoleChange(user.id, (e.target as HTMLInputElement).value)}
+                  onChange={e => handleRoleChange(user.id, e.target.value)}
                   className='text-sm border rounded px-2 py-1'
                 >
                   <option value='user'>User</option>

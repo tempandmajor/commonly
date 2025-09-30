@@ -378,7 +378,7 @@ const EditEvent = () => {
                     <Textarea
                       id='description'
                       value={eventData.description}
-                      onChange={e => handleInputChange('description', (e.target as HTMLInputElement).value)}
+                      onChange={e => handleInputChange('description', e.target.value)}
                       placeholder='Describe your event...'
                       rows={4}
                       className={errors.description ? 'border-destructive' : ''}

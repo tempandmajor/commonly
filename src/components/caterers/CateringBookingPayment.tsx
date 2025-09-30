@@ -140,7 +140,10 @@ const CateringBookingPayment: React.FC<CateringBookingPaymentProps> = ({
       : 0;
 
     const afterDiscount = subtotal - creatorDiscount;
-    const fees = calculateFees(afterDiscount);
+    const fees = calculateFees({
+      amount: afterDiscount,
+      isCreatorProgram: creatorProgram.isActive,
+    });
 
     return {
       subtotal,

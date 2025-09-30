@@ -214,7 +214,7 @@ const WalletDialogs: React.FC<WalletDialogsProps> = ({
               <Textarea
                 id='description'
                 value={transferDescription}
-                onChange={e => setTransferDescription((e.target as HTMLInputElement).value)}
+                onChange={e => setTransferDescription(e.target.value)}
                 placeholder='Enter a description for this transfer'
               />
             </div>

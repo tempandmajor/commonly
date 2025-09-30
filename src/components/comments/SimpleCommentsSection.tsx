@@ -172,7 +172,7 @@ export default function SimpleCommentsSection({
             <Textarea
               placeholder='Write a comment...'
               value={newComment}
-              onChange={e => setNewComment((e.target as HTMLInputElement).value)}
+              onChange={e => setNewComment(e.target.value)}
               className='min-h-[100px]'
             />
             <div className='flex justify-end'>

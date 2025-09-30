@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, MapPin, Clock } from 'lucide-react';
+import { Users, MapPin, Clock, Calendar } from 'lucide-react';
 import { safeSupabaseQuery } from '@/utils/supabaseHelpers';
 import { formatDistanceToNow } from 'date-fns';
 

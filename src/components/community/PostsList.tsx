@@ -125,7 +125,7 @@ const PostsList: React.FC<PostsListProps> = ({
               <Textarea
                 placeholder="What's on your mind?"
                 value={newPostContent}
-                onChange={(e) => setNewPostContent((e.target as HTMLInputElement).value)}
+                onChange={(e) => setNewPostContent(e.target.value)}
                 rows={3}
                 className='border-gray-300'
               />

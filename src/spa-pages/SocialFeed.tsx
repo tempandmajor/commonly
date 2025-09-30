@@ -287,7 +287,7 @@ const SocialFeed = () => {
                         <Textarea
                           placeholder="What's on your mind?"
                           value={newPostContent}
-                          onChange={e => setNewPostContent((e.target as HTMLInputElement).value)}
+                          onChange={e => setNewPostContent(e.target.value)}
                           className='min-h-[80px] resize-none'
                         />
                         <div className='flex items-center justify-between'>

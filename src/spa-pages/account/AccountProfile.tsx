@@ -444,7 +444,7 @@ const AccountProfile = () => {
                 <Textarea
                   id="bio"
                   value={profileData.bio}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, bio: (e.target as HTMLInputElement).value }))}
+                  onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
                   placeholder="Tell people about yourself..."
                   rows={3}
                 />

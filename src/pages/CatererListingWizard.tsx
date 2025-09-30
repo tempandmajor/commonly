@@ -267,7 +267,7 @@ const CatererListingWizard: React.FC = () => {
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => updateFormData('description', (e.target as HTMLInputElement).value)}
+          onChange={(e) => updateFormData('description', e.target.value)}
           placeholder="Tell potential clients about your catering business, your style, and what makes you special..."
           className="mt-2"
           rows={4}
@@ -642,7 +642,7 @@ const CatererListingWizard: React.FC = () => {
                   <Label>Description</Label>
                   <Textarea
                     value={menu.description}
-                    onChange={(e) => updateSampleMenu(index, 'description', (e.target as HTMLInputElement).value)}
+                    onChange={(e) => updateSampleMenu(index, 'description', e.target.value)}
                     placeholder="Describe what's included in this menu..."
                     className="mt-1"
                     rows={3}

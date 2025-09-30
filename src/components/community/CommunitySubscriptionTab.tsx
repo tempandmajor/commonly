@@ -100,10 +100,11 @@ const CommunitySubscriptionTab: React.FC<CommunitySubscriptionTabProps> = ({ com
 
       // Create subscription with real payment method (will be set during checkout)
       const subscriptionData = {
-        community_id: community.id,
-        subscription_type: selectedPlan,
+        communityId: community.id,
+        userId: user.id,
+        subscriptionType: selectedPlan,
         price: price,
-        payment_method_id: null, // paymentMethodId will be handled in checkout flow
+        paymentMethodId: null as any, // paymentMethodId will be handled in checkout flow
       };
       const subscriptionId = await createCommunitySubscription(subscriptionData);
 
@@ -244,7 +245,7 @@ const CommunitySubscriptionTab: React.FC<CommunitySubscriptionTabProps> = ({ com
                 : subscriptionSettings.yearlyPrice
             }
             productId={`community_${community.id}_${selectedPlan}`}
-            {...(user?.customerEmail && { customerEmail: user.customerEmail })}
+            {...(user?.email && { customerEmail: user.email })}
             onSuccess={handlePaymentSuccess}
             onError={() => setShowPaymentForm(false)}
           />

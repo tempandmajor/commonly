@@ -1068,7 +1068,7 @@ const VenueDetails: React.FC = () => {
                   id="description"
                   placeholder="Tell us about your event..."
                   value={eventDescription}
-                  onChange={(e) => setEventDescription((e.target as HTMLInputElement).value)}
+                  onChange={(e) => setEventDescription(e.target.value)}
                   className="border-gray-300"
                 />
               </div>
@@ -1079,7 +1079,7 @@ const VenueDetails: React.FC = () => {
                   id="special-requests"
                   placeholder="Any special setup or requirements..."
                   value={specialRequests}
-                  onChange={(e) => setSpecialRequests((e.target as HTMLInputElement).value)}
+                  onChange={(e) => setSpecialRequests(e.target.value)}
                   className="border-gray-300"
                 />
               </div>

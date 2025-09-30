@@ -377,7 +377,7 @@ const Help = () => {
                         </label>
                         <Textarea
                           value={contactForm.message}
-                          onChange={e => handleInputChange('message', (e.target as HTMLInputElement).value)}
+                          onChange={e => handleInputChange('message', e.target.value)}
                           rows={6}
                           className='border-gray-300 focus:border-[#2B2B2B]'
                           required

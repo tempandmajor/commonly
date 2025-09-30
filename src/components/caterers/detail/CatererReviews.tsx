@@ -269,7 +269,7 @@ const CatererReviews: React.FC<CatererReviewsProps> = ({ catererId, isAuthentica
                 <label className='text-sm font-medium mb-2 block'>Your Review</label>
                 <Textarea
                   value={newReview}
-                  onChange={e => setNewReview((e.target as HTMLInputElement).value)}
+                  onChange={e => setNewReview(e.target.value)}
                   placeholder='Share your experience with this caterer...'
                   rows={4}
                 />
